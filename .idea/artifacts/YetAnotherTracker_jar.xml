@@ -1,0 +1,15 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="YetAnotherTracker:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/YetAnotherTracker_jar</output-path>
+    <root id="archive" name="YetAnotherTracker.jar">
+      <element id="module-output" name="YetAnotherTracker" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/gson-2.8.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../products/commons-cli-1.4/commons-cli-1.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../products/commons-cli-1.4/commons-cli-1.4-tests.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../products/commons-cli-1.4/commons-cli-1.4-javadoc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../products/commons-cli-1.4/commons-cli-1.4-sources.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../products/commons-cli-1.4/commons-cli-1.4-test-sources.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../products/OpenCV-342/build/java/opencv-342.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

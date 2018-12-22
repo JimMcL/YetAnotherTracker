@@ -1,0 +1,22 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="JavaFXApp">
+    <output-path>$PROJECT_DIR$/out/artifacts/JavaFXApp</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="com.jim.Main" />
+        <option name="description" value="" />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="title" value="Yet Another Tracker" />
+        <option name="vendor" value="" />
+        <option name="version" value="" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="JavaFXApp.jar">
+        <element id="module-output" name="YetAnotherTracker" />
+      </element>
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../products/OpenCV-342/build/java/opencv-342.jar" path-in-jar="/" />
+      <element id="dir-copy" path="$PROJECT_DIR$/../../../products/OpenCV-342/build/java/x64" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane prefHeight="256.0" prefWidth="200.0" style="-fx-background-color: #c0c0c0;" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jim.ui.ParamsForm">
+   <children>
+      <Accordion prefHeight="310.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <panes>
+          <TitledPane animated="false" text="Thresholding">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </TitledPane>
+          <TitledPane animated="false" text="Contour filter">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="200.0">
+                     <children>
+                        <GridPane prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="226.0" minWidth="10.0" prefWidth="117.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="0.0" prefWidth="61.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                              <RowConstraints maxHeight="48.0" minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="48.0" minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="48.0" minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="48.0" minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="48.0" minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="48.0" minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="48.0" minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="48.0" minHeight="10.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="Min. contour area:" />
+                              <Label fx:id="minContourLabel" text="10" GridPane.columnIndex="1" />
+                              <Slider fx:id="minContourSlider" blockIncrement="1.0" max="1000.0" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                              <Label text="Max. contour area:" GridPane.rowIndex="2" />
+                              <Label fx:id="maxContourLabel" text="500" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Slider fx:id="maxContourSlider" blockIncrement="1.0" max="1000.0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                              <Label text="Min. contour length:" GridPane.rowIndex="4" />
+                              <Label fx:id="minContourLenLabel" text="10" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <Slider fx:id="minContourLenSlider" blockIncrement="1.0" max="1000.0" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                              <Label text="Max. contour length:" GridPane.rowIndex="6" />
+                              <Label fx:id="maxContourLenLabel" text="500" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <Slider fx:id="maxContourLenSlider" blockIncrement="1.0" max="1000.0" GridPane.columnSpan="2" GridPane.rowIndex="7" />
+                           </children>
+                        </GridPane>
+                     </children>
+                     <opaqueInsets>
+                        <Insets top="10.0" />
+                     </opaqueInsets></AnchorPane>
+            </content>
+          </TitledPane>
+          <TitledPane animated="false" text="Othering">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </TitledPane>
+        </panes>
+      </Accordion>
+   </children>
+</AnchorPane>

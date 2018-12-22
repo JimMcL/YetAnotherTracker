@@ -1,0 +1,1 @@
+To load the opencv dll when running within Idea, the Module library opencv_342 is given a native library location which is the directory containing the DLL.
