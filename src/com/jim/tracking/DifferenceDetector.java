@@ -1,7 +1,6 @@
 package com.jim.tracking;
 
 import com.jim.Params;
-import com.jim.ui.OptionalFeedbackWindow;
 import com.jim.util.Util;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -14,16 +13,14 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * Detects objects which differ from a background frame.
  */
 public class DifferenceDetector implements MotionDetector.Detector {
+    // Maximum number of objects to detect in 1 frame
     private static final int MAX_CONTOURS = 1000;
-    private OptionalFeedbackWindow fb = new OptionalFeedbackWindow("Hierarchy", true);
-    //    private Mat foregroundFrame;
 
     /** Returns centroids of detected contours.
      * Various feedback graphics are optionally (based on <code>opts</code>) drawn to <code>feedbackImage</code>.
@@ -112,11 +109,6 @@ public class DifferenceDetector implements MotionDetector.Detector {
                 }
 
                 result.add(trackedObject);
-
-                double epsilon = .01 * contourLength;
-                MatOfPoint2f approx = new MatOfPoint2f();
-                Imgproc.approxPolyDP(contour2f, approx, epsilon, true);
-                Imgproc.drawContours(feedbackImage, Arrays.asList(Util.matOfPoint2fToMatOfPoint(approx)), 0, Util.RGB(0, 255, 80));
 
                 // Feedback
                 if (params.grParams.showContours)

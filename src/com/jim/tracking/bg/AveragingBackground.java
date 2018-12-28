@@ -20,6 +20,8 @@ public class AveragingBackground extends BackgroundHandler {
             return new AveragingBackground(framesToAverage, true);
         });
         BackgroundHandler.registerHandlerFactory("PreviousFrames", arg -> {
+            if (arg.userArgs.length != 1)
+                throw new RuntimeException("PreviousFrames background method requires a single numeric argument (number of frames to average)");
             final long framesToAverage = Long.parseLong(arg.userArgs[0]);
             // Special case
             if (framesToAverage == 1)

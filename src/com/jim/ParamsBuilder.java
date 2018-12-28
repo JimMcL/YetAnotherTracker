@@ -111,6 +111,7 @@ public class ParamsBuilder {
         options.addOption(null, "max-length", true, "maximum width/height of ellipse to track (default " + params.trParams.maxLength + ")");
         options.addOption(null, "max-jump", true, "maximum distance between detections which can belong to the same track (default " + params.trParams.maxJump + ")");
         options.addOption(null, "min-gap", true, "multiple objects closer than this will not create new tracks (default " + params.trParams.minGap + ")");
+        options.addOption(null, "age-weighting", true, "importance of track age when assigning tracks to detected objects (pixels/frame, default " + params.trParams.ageWeighting + ")");
         options.addOption(null, "background-method", true, "background calculation method (default " + bgDescr + ")");
         options.addOption(null, "mask-file", true, "JSON file defining region of interest");
         options.addOption(null, "termination-border", true, "Tracks which stop moving within this distance of the border will be terminated (default not terminated)");
@@ -205,6 +206,7 @@ public class ParamsBuilder {
         params.trParams.maxLength = doubleArg(cmd, "max-length", params.trParams.maxLength);
         params.trParams.maxJump = doubleArg(cmd, "max-jump", params.trParams.maxJump);
         params.trParams.minGap = doubleArg(cmd, "min-gap", params.trParams.minGap);
+        params.trParams.ageWeighting = doubleArg(cmd, "age-weighting", params.trParams.ageWeighting);
         if(cmd.hasOption("mask-file")) {
             String fileName = cmd.getOptionValue("mask-file");
             if (!new File(fileName).exists()) {
@@ -259,8 +261,20 @@ public class ParamsBuilder {
         if (params.srcParams.videoFile == null && posArgs.length == 1) {
             params.srcParams.videoFile = posArgs[0];
         }
+        if (params.srcParams.videoFile == null) {
+            System.err.println("Missing video file name");
+            printUsageAndExit(options);
+        }
+        if (!new File(params.srcParams.videoFile).canRead()) {
+            System.err.println("Unable to read video file '" + params.srcParams.videoFile + "'");
+            printUsageAndExit(options);
+        }
+        if (posArgs.length > 1) {
+            System.err.println("Too many arguments " + posArgs.length + ", only 1 video may be specified");
+            printUsageAndExit(options);
+        }
 
-        if(cmd.hasOption("csv"))
+        if(cmd.hasOption("csv") && writer == null)
             writer = getTrackCSVWriter(params, cmd, hasKalmanTracker, TrackCSVWriter.deriveName(params.srcParams.videoFile));
 
         if(cmd.hasOption("debug-overlay"))
@@ -278,15 +292,7 @@ public class ParamsBuilder {
             for (MotionDetector.Filter filter : params.trParams.filters) {
                 System.out.println("    " + filter);
             }
-        }
-
-        if (params.srcParams.videoFile == null) {
-            System.err.println("Missing video file name");
-            printUsageAndExit(options);
-        }
-        if (!new File(params.srcParams.videoFile).canRead()) {
-            System.err.println("Unable to read video file '" + params.srcParams.videoFile + "'");
-            printUsageAndExit(options);
+            System.out.println("Autorun? " + params.grParams.running);
         }
 
         // Register available background handlers

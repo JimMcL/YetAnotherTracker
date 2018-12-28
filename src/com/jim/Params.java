@@ -124,6 +124,8 @@ public class Params {
         public double minGap = 50;
         /** Tracks which stop moving within this distance of the border will be terminated. */
         public double terminationBorder = -1;
+        /** Factor to apply (pixels/frame) when determining how to penalise old tracks when matching detected objects to tracks. */
+        public double ageWeighting = 0;
 
         /** Region of interest - used to ignore extraneous movement etc.
          * This region is in untransformed source image coordinates. */

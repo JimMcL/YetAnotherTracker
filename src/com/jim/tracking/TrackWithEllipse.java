@@ -9,12 +9,12 @@ import org.opencv.core.RotatedRect;
 public class TrackWithEllipse extends KalmanTrack {
     private final RotatedRect ellipse;
 
-    public TrackWithEllipse(long trackId, Cfg cfg, Point centroid, RotatedRect ellipse) {
-        super(trackId, cfg, centroid);
+    TrackWithEllipse(long trackId, Cfg cfg, Point centroid, RotatedRect ellipse, int frameNumber) {
+        super(trackId, cfg, centroid, frameNumber);
         this.ellipse = ellipse;
     }
 
-    public RotatedRect getEllipse() {
+    RotatedRect getEllipse() {
         return ellipse;
     }
 

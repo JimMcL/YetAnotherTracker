@@ -42,17 +42,20 @@ public class FrameLoop {
 
         // Frame size
         Size sz = null;
+        Mat frame = null;
 
         // For each frame in the video...
         while (true) {
             // Maybe read the next frame
             if (grParams.running || player.getFrameIndex() == 0) {
-                if (!player.read(rawFrame))
+                if (!player.read(rawFrame)) {
                     // Read failed - stop
                     break;
+                }
             }
             // Clone the raw frame because the frame object gets modified
-            Mat frame = rawFrame.clone();
+            if (rawFrame.size().width > 0) // rawFrame is empty at EOF
+                frame = rawFrame.clone();
             sz = transformFrame(srcParams, sz, frame);
 
             // Maybe equalize histogram

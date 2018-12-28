@@ -1,6 +1,6 @@
 # README
 
-A Java application for analysing motion in videos, based
+A Java application for tracking moving objects in videos, based
 on OpenCV. It was built for extracting the paths of spiders and
 insects from a video, and writing the coordinates to a CSV file.
 
@@ -16,7 +16,9 @@ generally start and end in roughly the same location, so real tracks
 may be identifiable by their large diffusion distance or length (although clearly
 this is not an infallible test and depends on the tracks).
 
-Currently, the app is controlled through command line parameters.
+Currently, the app is controlled through command line parameters and/or a 
+configuration file. To use it, you should be comfortable with editing text 
+files and know what a command line app is. 
 
 ## Installation
 
@@ -33,12 +35,26 @@ Windows. Edit the file to specify the locations of the Java
 runtime and OpenCV. See comments within the file for details. Run it with no
 arguments for a usage message.
 
+You can safely ignore the warning:
+`WARNING: Could not open/create prefs root node Software\JavaSoft\Prefs at root 0x80000002. Windows RegCreateKeyEx(...) returned error code 5.
+`. 
+
+### Processing overview
+
+Frames from the [input video](#Input) are processed in order. 
+Moving objects are [detected in each frame](#MotionDetector), using one of several possible techniques. 
+Tracks are created by [combining close objects](#Tracks) from different frames. 
+Tracks may be written to an [output CSV file](#Output). 
+All processing is controlled by specifying options on the command lnie and/or in a defaults file.
+Options specified on the command line override those in a defaults file.
+ 
 ### What options should I use?
 
 Options can be specified on the command line using the long option syntax e.g. `--output file`. 
 Some options also have a short option syntax, e.g. `-o file`. 
 Options can also be specified in the defaults file (see option `defaults`), which has a single option per line, with the syntax e.g. `output=file`.
- 
+
+<a id="Input"></a>
 #### Input files
 * `--defaults <file>` specifies the name of an defaults file which contains any option values.
 * `--video <file>` specifies the input video file name. Alternatively, just add the file name to the command line without an option.
@@ -53,13 +69,15 @@ Options can also be specified in the defaults file (see option `defaults`), whic
 Output trajectory coordinates are in pixels unless you specify a scale. 
 To specify a scale, you must know either the scale _after resizing_, e.g. `27 pixels/mm`, 
 or the real world width or height of the video frame, e.g. `600 mm`. You can use the `Scale` 
-button within the app to help calculate the scale. Setting `--view scale ?` will automatically 
+button within the app to help calculate the scale by allowing you to measure a distance in the video. 
+Setting `--view scale ?` will automatically 
 turn off autorun and display the scale measurement dialog box. 
 
 * `--view-scale <number>` specifies the display scale _after resizing_ (see the `--resize` option).    
 * `--view-width <number> <units>`, `--view-height <number> <units>` width/height of video frame in real world units, eg. `view-width=600mm`. 
    You must specify the view size if you want the output CSV file in real world units rather than pixels (see option `csv-units`).
 
+<a id="Output"></a>
 #### Output files  
 Track positions can be saved in a CSV file. Columns are:  
 
@@ -70,8 +88,7 @@ Track positions can be saved in a CSV file. Columns are:
 | `TrackId` | A file can contain multiple tracks, each is given a unique numeric ID |
 | `x`, `y` | X & y position of the track in the frame. Units are pixels or world units specified by options `csv-units` and `view-scale`, `view-width` or `view-height` |
 
-Additionally, the contents of the feedback window (see option `--display-video` under 
-[Debugging](#Debugging)) can be written to a video file.   
+Additionally, the contents of the main window can be written to a video file.   
 
 * `-o <file>`, `--output <file>` specifies the name of the output CSV or video file. The file type is deduced from the file extension.
 * `--csv` Write a CSV file. The CSV file name is the same as the name of the input video file, with the extension changed to `.csv`.
@@ -84,15 +101,13 @@ or else scaled to the units specified in the options `view-scale`, `view-width` 
 <a id="Debugging"></a>
 #### Debugging
 
-* `--autorun [true|false]` starts or stops the video from playing automatically on app startup.
+* `--autorun {true|false}` starts or stops the video from playing automatically on app startup.
 * `-v`, `--verbose` writes various status information to the console.
 * `-d`, `--debug` writes very verbose debugging output to the console, which can be useful e.g. 
     to determine why contours aren't converted to tracked objects.
-* `-g`, `--display-video` displays the (resized) video in a window, optionally with various overlays 
-    based on other options. By default, the window is the size of the input video after rotation and resizing. 
-  * `-s`, `--playback-speed` specifies a playback speed relative to "normal" - which is read from the 
-    meta data in the video. Note that processing speeds may result in playback slower than specified.
-  * `--frame-size <width>x<height>` resizes the playback window to the specified size. 
+* `--frame-size <width>x<height>` resizes the main window to the specified size. 
+* `--headless` runs without any kind of user interface. This is useful if you know you have
+   specified all the correct parameters and just want to process a video as fast as possible.
 
 ### Region of interest
 You can exclude parts of the video from analysis by defining a mask, which is simply one 
@@ -125,11 +140,12 @@ Example mask file:
 
 ___
 
-#### Motion detector
+<a id="MotionDetector"></a>
+### Motion detector
 Two types of motion detector are available, "optical-flow" (the default), and "differences", 
 specified by the option `--motion-detector`.
 
-##### Optical flow motion detector 
+#### Optical flow motion detector 
 
 There are no options to customise the optical flow motion detector. Specify the option 
 `--display-flow` to draw objects detected by the optical flow motion detector on the feedback window. 
@@ -137,7 +153,7 @@ This works by first
 detecting potential features using Shi-Tomasi feature detection, then applying the 
 Lucas-Kanade method with pyramids.   
 
-##### Differences motion detector
+#### Differences motion detector
 
 `--foreground-segmenter background-subtraction`
 
@@ -197,16 +213,25 @@ feedback window. Use `--display-rectangle` to display contour bounding rectangle
 Tracked objects are created from the contour centroids. 
 ___
 
+<a id="Tracks"></a>
 ### Creating tracks
 
 To create tracks, detected objects must be combined between frames. 
 A Kalman filter (option `-k <arg>`, `--kalman <arg>`) is used to combine detected objects across frames into 
 tracks. The filter `<arg>` can be one of `veryfast`, `fast`, `normal`, `slow`, or `veryslow`. 
 The maximum distance (in pixels) is specified 
-with the option `----max-jump <arg>`. If an object moves further than the maximum distance between 
+with the option `--max-jump <arg>`. If an object moves further than the maximum distance between 
 two consecutive frames, it will be treated as two separate objects. 
 Multiple objects within `--min-gap <arg>` units 
-will be treated as a single object. You can ignore the starting frames using the 
+will be treated as a single object. 
+
+Tracks are matched with the closest detected objects in each frame. Use the 
+option `--age-weighting <weight>` to match objects to active tracks in preference 
+to old, stopped, tracks. The `<weight>` value is multiplied by the 'age' of the track 
+(number of frames) since last detection to obtain a weighted distance between the object and the track. 
+
+
+You can ignore the starting frames using the 
 option `--first-tracking-frame <frame>`, which may be useful if the start of the video is noisy or 
 the camera is settling. Similarly, the option `--no-new-tracks` prevents any new tracks from being created 
 after the starting frame.
@@ -233,3 +258,9 @@ Use `--min-contour` and `--max-contour` to control what contours are kept as
 potential objects to be tracked, and use `--display-contours` to see the results.   
 
 If you want tracks as output, you must specify `--kalman <speed>`.
+
+___
+## TODO
+* Apply image stabilisation. This might even allow handheld videos to be used effectively
+* Improve the algorithm used for matching detected objects in each frame to existing tracks. 
+* Apply some kind of object detector such as YOLO to detect (and identify) foreground objects.

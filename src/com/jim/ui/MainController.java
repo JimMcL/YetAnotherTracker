@@ -99,15 +99,13 @@ public class MainController extends HeadlessController implements MotionDetector
                 imageView.fitHeightProperty().bind(container.heightProperty().add(-(Double)newValue)));
 
         // Set up the slider to change the current frame of the video
-/* TODO make this work - need to reset various filters such as object detectors.
-        frameSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (!ignoreSliderChanges) {
-                if (params.grParams.running)
-                    pausePlayingVideo();
-                videoPlayer.setFrameIndex(newValue.intValue());
-            }
-        });
-*/
+//        frameSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+//            if (!ignoreSliderChanges) {
+//                if (params.grParams.running)
+//                    pausePlayingVideo();
+//                videoPlayer.setFrameIndex(newValue.intValue());
+//            }
+//        });
     }
 
     @Override

@@ -15,6 +15,7 @@ import static org.opencv.core.CvType.CV_32F;
  * if the object position is known, or one of {@link #stopped() stopped} or
  * {@link #continueAsPredicted() continueAsPredicted} if it's not.
  */
+@SuppressWarnings("WeakerAccess")
 public class KalmanTrack {
     /** The actual kalman filter. */
     private final KalmanFilter filter;
@@ -29,7 +30,7 @@ public class KalmanTrack {
     private Point lastPredictedPoint;
     private Point currentPosition;
     private boolean positionChanged = false;
-    private int lastDetectedAt = 0;
+    private int lastDetectedAt;
     private int changeCount = 0;
 
     /** Defines a set of configurable parameters for the Kalman filter. */
@@ -90,14 +91,15 @@ public class KalmanTrack {
     // =======================================================================================
 
     /** Constructor.
-     *
-     * @param trackId Id of this track.
+     *  @param trackId Id of this track.
      * @param cfg Parameters controlling smoothness of filter.
      * @param initialPosition Starting object position.
+     * @param frameNumber Frame number of first detection.
      */
-    public KalmanTrack(long trackId, Cfg cfg, Point initialPosition) {
+    public KalmanTrack(long trackId, Cfg cfg, Point initialPosition, int frameNumber) {
         this.trackId = trackId;
         this.initialPosition = initialPosition;
+        this.lastDetectedAt = frameNumber;
 
         // Based on http://www.morethantechnical.com/2011/06/17/simple-kalman-filter-for-tracking-using-opencv-2-2-w-code/
         // 4 dynamic parameters, x, y position and x, y velocity
@@ -227,7 +229,7 @@ public class KalmanTrack {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "<" + Util.formatPoint(getCurrentPosition()) + "," + getAppliedPointCount() + (positionChanged ? ",stopped" : "") + ">";
+        return getClass().getSimpleName() + "<" + Util.formatPoint(getCurrentPosition()) + "," + getAppliedPointCount() + (positionChanged ? ",stopped" : "") + ",age=" + lastDetectedAt + ">";
     }
 
     // ================================================================================================

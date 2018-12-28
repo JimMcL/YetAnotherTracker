@@ -17,7 +17,7 @@ public class MOGForegroundSegmenter implements ForegroundSegmenter {
 
     public MOGForegroundSegmenter(int history, int varThreshold, boolean detectShadows) {
         subtractor = Video.createBackgroundSubtractorMOG2(history, varThreshold, detectShadows);
-//        subtractor.setShadowValue(0);
+        subtractor.setShadowValue(0);
     }
 
     @Override
