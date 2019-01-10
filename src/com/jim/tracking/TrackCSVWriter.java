@@ -47,7 +47,9 @@ public class TrackCSVWriter extends CSVWriter implements MotionDetector.Filter {
 
     @Override
     public String toString() {
-        return Util.getFirstNamedAncestor(getClass()).getSimpleName() + " - writes tracked objects to a CSV file";
+        return Util.getFirstNamedAncestor(getClass()).getSimpleName() +
+                " - writes tracked objects to a CSV file, " +
+                "fps = " + (this.fps > 0 ? this.fps : "input video frame rate");
     }
 
     public static boolean canHandle(String fileName) {
@@ -81,7 +83,7 @@ public class TrackCSVWriter extends CSVWriter implements MotionDetector.Filter {
             return;
 
         int frameIndex = camera.getFrameIndex();
-        frameSize = opts.grParams.playbackSize;
+        frameSize = opts.srcParams.frameSize;
         lastFrameIndex = frameIndex;
 
         scaleFactor = scale > 0 ? 1 / scale :
@@ -100,7 +102,7 @@ public class TrackCSVWriter extends CSVWriter implements MotionDetector.Filter {
                         Point lastPos = skippedPos.get(trackId);
                         if (lastPos != null) {
                             // Write the last frame
-                            writePos(frameIndex, camera, trackId, lastPos, false);
+                            writePos(frameIndex - 1, camera, trackId, lastPos, false);
                             skippedPos.remove(trackId);
                         }
 

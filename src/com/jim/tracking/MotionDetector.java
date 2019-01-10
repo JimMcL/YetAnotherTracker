@@ -65,10 +65,6 @@ public class MotionDetector implements FrameLoop.Handler {
     @Override
     public void onVideoOpened(VideoPlayer videoPlayer) {
         cameraInfo = videoPlayer;
-        // Calculate playback size
-//        final Size rotated = params.srcParams.angle.rotateSize(new Size(cameraInfo.getfWidth(), cameraInfo.getfHeight()));
-//        final Size scaled = params.srcParams.scaleSize(rotated);
-//        params.grParams.calcFeedbackSize(scaled);
 
         fDetector = new FeatureDetector();
 

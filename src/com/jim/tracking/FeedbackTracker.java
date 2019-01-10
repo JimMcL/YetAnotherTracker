@@ -23,7 +23,7 @@ public class FeedbackTracker implements MotionDetector.Filter {
 
     @Override
     public void handle(List<MotionDetector.DetectedObject> detectedObjects, List<TrackWithEllipse> tracks, Mat greyFrame, Mat feedbackImage, Params params, VideoPlayer camera) {
-        Size dsize = params.grParams.playbackSize;
+        Size dsize = params.srcParams.frameSize;
 
         // Pick the longest track so far
         double longest = 0;

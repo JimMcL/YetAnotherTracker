@@ -52,7 +52,7 @@ public class ParamsBuilder {
         Params params = new Params();
         String bgDescr = "PreviousFrames:1";
         String motionDetector = "optical-flow";
-        String fgSegmenter = "MOG";
+        String fgSegmenter = "KNN";
         int firstTrackingFrame = 1;
 
         Options options = new Options();
@@ -94,7 +94,7 @@ public class ParamsBuilder {
         // Options controlling moving object detection
 
         options.addOption(null, "motion-detector", true, "motion detector (optical-flow or differences, default " + motionDetector + ")");
-        options.addOption(null, "foreground-segmenter", true, "foreground segmenter (background-subtraction or MOG, default " + fgSegmenter + ")");
+        options.addOption(null, "foreground-segmenter", true, "foreground segmenter (background-subtraction, KNN or MOG, default " + fgSegmenter + ")");
         options.addOption(null, "resize", true, "resize input video to this width before processing (pixels)");
         options.addOption(null, "equalize", false, "equalize histogram on input video before processing");
         options.addOption(null, "blur-size", true, "kernel size for gaussian blur (pixels, default " + params.trParams.blurSize + ")");
@@ -292,7 +292,6 @@ public class ParamsBuilder {
             for (MotionDetector.Filter filter : params.trParams.filters) {
                 System.out.println("    " + filter);
             }
-            System.out.println("Autorun? " + params.grParams.running);
         }
 
         // Register available background handlers

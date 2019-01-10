@@ -35,6 +35,11 @@ public class Params {
         public Dimension height;
         /** Width to resize input frame to - speeds up processing. 0 means don't resize. */
         public double resizeWidth = 0;
+
+        /** Frame size after rotation and scaling. This is not really a parameter:
+         * it is derived from other parameters and the input video size.
+         * It is set the first time through the frame loop. */
+        public Size frameSize;
         // True if the scale dialog should be displayed on startup
         public boolean manualScale;
         /** Input video recording frame rate (frames/sec). */
@@ -58,6 +63,11 @@ public class Params {
             this.scale = scale;
             ObserverMgr.getInstance().fire(this);
         }
+
+        /** Sets the frame size. */
+        public void setFrameSize(Size frameSize) {
+            this.frameSize = frameSize;
+        }
     }
 
     /** Options which affect video playback, largely useful for debugging what is going on. */
@@ -80,7 +90,7 @@ public class Params {
         public boolean showTracks = false;
         public double playbackSpeed = 1;
         public boolean rotateToTrack = false;
-        public Size playbackSize = null;    // Defaults to resized frame size
+        public Size playbackSize = null;
         public boolean verbose = false;
         public boolean debug = true;
         public boolean showFeatures = true;

@@ -81,9 +81,11 @@ public class FrameLoop {
         // Perhaps rotate
         srcParams.angle.rotate(frame);
         // Resize
-        if (sz == null)
+        if (sz == null) {
             // Calculate desired frame size
             sz = srcParams.scaleSize(frame.size());
+            srcParams.setFrameSize(sz);
+        }
         Imgproc.resize(frame, frame, sz);
         return sz;
     }

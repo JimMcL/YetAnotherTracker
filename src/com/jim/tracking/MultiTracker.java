@@ -78,7 +78,7 @@ public class MultiTracker implements MotionDetector.Filter {
 
     @Override
     public String toString() {
-        return "Kalman filter (" + cfg + ") - smooths object tracking";
+        return "Kalman filter (" + cfg + ") - tracks object across frames";
     }
 
     // ==============================================================================================

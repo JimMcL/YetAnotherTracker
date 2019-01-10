@@ -5,7 +5,8 @@ verbose=true
 mask-file=mask.json
 termination-border=15
 #mask-file=4119.json
-view-scale=22446.2
+#view-scale=22446.2
+view-width=600mm
 csv-units=m
 
 csv=true

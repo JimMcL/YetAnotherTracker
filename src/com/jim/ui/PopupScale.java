@@ -49,7 +49,7 @@ public class PopupScale extends Popup {
         }
 
         public boolean isDefined() {
-            return !Double.isNaN(scale);
+            return !Double.isNaN(scale) && !Double.isInfinite(scale);
         }
     }
 

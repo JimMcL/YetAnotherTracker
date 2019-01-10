@@ -10,15 +10,17 @@ of computer vision techniques is very useful. Graphical output is provided as a
 debugging/comprehension tool to aid in determining the best parameters
 for a task.
 
-There will usually be many false tracks generated as a result of noise,
-physical vibrations or lighting fluctuations. These false tracks
-generally start and end in roughly the same location, so real tracks
-may be identifiable by their large diffusion distance or length (although clearly
-this is not an infallible test and depends on the tracks).
+There will usually be many false tracks generated as a result of
+noise, physical vibrations or lighting fluctuations. These false
+tracks generally start and end in roughly the same location, so real
+tracks may be identifiable by their long length, maximum displacement
+or diffusion distance (although clearly none of these are infallible
+tests and the best approach will depend on the nature of your tracks).
 
-Currently, the app is controlled through command line parameters and/or a 
-configuration file. To use it, you should be comfortable with editing text 
-files and know what a command line app is. 
+Currently, the app does not have a pretty GUI interface, rather it is
+controlled through command line parameters and/or a configuration
+file. To use it, you should be comfortable with editing text files and
+know what a command line application is and how to use it. 
 
 ## Installation
 
@@ -45,7 +47,7 @@ Frames from the [input video](#Input) are processed in order.
 Moving objects are [detected in each frame](#MotionDetector), using one of several possible techniques. 
 Tracks are created by [combining close objects](#Tracks) from different frames. 
 Tracks may be written to an [output CSV file](#Output). 
-All processing is controlled by specifying options on the command lnie and/or in a defaults file.
+All processing is controlled by specifying options on the command line and/or in a defaults file.
 Options specified on the command line override those in a defaults file.
  
 ### What options should I use?
@@ -243,19 +245,37 @@ within the specified number of pixels of the mask region will be terminated.
 ### But again, what options should I use?
 
 Best results will be obtained by experimenting with the various settings, 
-and will entirely depend on the video. 
-Sometimes it is best to start as simply as possible. First try the 
-`--motion-detector optical-flow`, and only if that doesn't work, try 
-`--motion-detector differences`. Start with 
-`--background-method none` and `--threshold-method global` and fiddle with the value 
-of `--threshold <n>` until you get a reasonable result. Try different blur sizes, including 0. 
-If that doesn't produce a usable 
-result, start experimenting with different background methods 
-or foreground segmenters. While playing with thresholding, use `--display-threshold` to see
+and will entirely depend on the video.
+
+If the video is high quality, consistently well lit and in focus, with
+clear contrast between the object to be tracked and the background,
+then the simplest options may give good results. Try
+`--motion-detector differences`, `--background-method none` and
+`--threshold-method global` and fiddle with the value of `--threshold
+<n>` until you get a reasonable result. Also try different blur sizes,
+including 0. 
+
+If the intensity of lighting varies across the frame, try
+`--threshold-method adaptive` and vary `--threshold-C <n>`.
+
+For more difficult videos, try `--motion-detector optical-flow`, then
+`--motion-detector differences` with `--foreground-segmenter
+KNN:<history>:<dist2Threshold>:<detectShadows>`. Fiddle with
+`<history>` (the number of frames used to construct the background),
+`dist2Threshold` (threshold value between foreground and background),
+and `detectShadows` (`true` or `false`: if `true`, shadows are
+detected and not treated as part of the foreground).
+
+While playing with thresholding, use `--display-threshold` to visalise
 the results. 
 
 Use `--min-contour` and `--max-contour` to control what contours are kept as 
-potential objects to be tracked, and use `--display-contours` to see the results.   
+potential objects to be tracked, and use `--display-contours` to see the results.
+
+Contours which lie within another contour are not detected. If you
+have an object which is not being detected even though it appears in
+the threshold window, try masking an area to exclude a containing
+contour.
 
 If you want tracks as output, you must specify `--kalman <speed>`.
 

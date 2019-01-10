@@ -22,7 +22,7 @@ public class VideoResult implements MotionDetector.Filter {
     @Override
     public void handle(List<MotionDetector.DetectedObject> detectedObjects, List<TrackWithEllipse> tracks, Mat greyFrame, Mat feedbackImage, Params opts, VideoPlayer camera) {
         // The "if" is a bit of a hack - the feedback frame is (possibly) the wrong size until tracking has started
-        if (feedbackImage.size().equals(opt.playbackSize))
+        if (feedbackImage.size().equals(opts.srcParams.frameSize))
             writer.write(feedbackImage);
     }
 
@@ -36,6 +36,7 @@ public class VideoResult implements MotionDetector.Filter {
 //        final int fourcc = VideoWriter.fourcc('H', '2', '6', '4');
 //        final int fourcc = VideoWriter.fourcc('X', '2', '6', '4');
 //        final int fourcc = VideoWriter.fourcc('L', 'A', 'G', 'S');
+        // TODO Need to use opts.srcParams.frameSize rather than opt.playbackSize
         writer = new VideoWriter(fileName, fourcc, fps, opt.playbackSize, true);
     }
 
