@@ -14,7 +14,7 @@ There will usually be many false tracks generated as a result of
 noise, physical vibrations or lighting fluctuations. These false
 tracks generally start and end in roughly the same location, so real
 tracks may be identifiable by their long length, maximum displacement
-or diffusion distance (although clearly none of these are infallible
+or diffusion distance or maximum number of points in the track (although clearly none of these are infallible
 tests and the best approach will depend on the nature of your tracks).
 
 Currently, the app does not have a pretty GUI interface, rather it is
