@@ -124,7 +124,9 @@ video.
 The `Mask` button may be used to create a mask by drawing it on the video. Click the `Save` button 
 to write the mask JSON to a file with the same name as the input video file, and extension `.json`.
 be aware that changing a mask while analysing can lead to some surprising artifacts. It is best to define 
-a new mask, save it to a file, then restart the analysis specifying the new mask file.
+a new mask, save it to a file, then restart the analysis specifying the new mask file. As a convenience,
+the command line option `--mask true` will use a mask file with name `<video file>.json` if it exists,
+and silently do nothing if the file doesn't exist.
    
 Example mask file:
 

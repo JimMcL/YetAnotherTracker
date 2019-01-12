@@ -43,7 +43,7 @@ import java.util.Properties;
 import static com.jim.util.Util.join;
 import static com.jim.util.Util.parseSize;
 
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "SameParameterValue"})
 public class ParamsBuilder {
     private static final String DEFAULTS_SUFFIX = ".properties";
 
@@ -54,6 +54,7 @@ public class ParamsBuilder {
         String motionDetector = "optical-flow";
         String fgSegmenter = "KNN";
         int firstTrackingFrame = 1;
+        boolean checkForMask = false;
 
         Options options = new Options();
 
@@ -114,6 +115,7 @@ public class ParamsBuilder {
         options.addOption(null, "age-weighting", true, "importance of track age when assigning tracks to detected objects (pixels/frame, default " + params.trParams.ageWeighting + ")");
         options.addOption(null, "background-method", true, "background calculation method (default " + bgDescr + ")");
         options.addOption(null, "mask-file", true, "JSON file defining region of interest");
+        options.addOption(null, "mask", true, "If true and <filename>.json file exists, it is used as a mask file name (default " + checkForMask + ")");
         options.addOption(null, "termination-border", true, "Tracks which stop moving within this distance of the border will be terminated (default not terminated)");
 
         // Object tracking options
@@ -207,19 +209,6 @@ public class ParamsBuilder {
         params.trParams.maxJump = doubleArg(cmd, "max-jump", params.trParams.maxJump);
         params.trParams.minGap = doubleArg(cmd, "min-gap", params.trParams.minGap);
         params.trParams.ageWeighting = doubleArg(cmd, "age-weighting", params.trParams.ageWeighting);
-        if(cmd.hasOption("mask-file")) {
-            String fileName = cmd.getOptionValue("mask-file");
-            if (!new File(fileName).exists()) {
-                System.err.println("mask-file does not exist: " + fileName);
-                System.exit(1);
-            }
-            try {
-                params.trParams.setMask(new Region(new FileReader(fileName)));
-            } catch (IOException e) {
-                System.err.println("Error reading " + fileName + ": " + e.getLocalizedMessage());
-                System.exit(1);
-            }
-        }
         params.trParams.terminationBorder = doubleArg(cmd, "termination-border", params.trParams.terminationBorder);
 
         // Filters (order is important)
@@ -273,6 +262,8 @@ public class ParamsBuilder {
             System.err.println("Too many arguments " + posArgs.length + ", only 1 video may be specified");
             printUsageAndExit(options);
         }
+
+        maybeSetMask(cmd, params.srcParams.videoFile, checkForMask, params);
 
         if(cmd.hasOption("csv") && writer == null)
             writer = getTrackCSVWriter(params, cmd, hasKalmanTracker, TrackCSVWriter.deriveName(params.srcParams.videoFile));
@@ -436,7 +427,7 @@ public class ParamsBuilder {
             try {
                 return Boolean.parseBoolean(value);
             } catch (Exception e) {
-                throw new RuntimeException("Invalid value (" + value + ") for option " + optName);
+                throw new RuntimeException("Invalid value (" + value + ") for option " + optName, e);
             }
         }
         return defaultValue;
@@ -491,6 +482,38 @@ public class ParamsBuilder {
                 "(\n\tbackground-subtraction, \n\tMOG[:history:varThreshold:detectShadows]), " +
                 "\n\tKNN[:history:dist2Threshold:detectShadows])");
         return null;
+    }
+
+    private static void maybeSetMask(CommandLine cmd, String videoFile, boolean checkForMask, Params params) {
+        boolean onlyIfExists = booleanArg(cmd, "mask", checkForMask);
+        System.out.println("onlyIfExists = " + onlyIfExists);
+        System.out.println("cmd.hasOption(optName) = " + cmd.hasOption("mask"));
+        System.out.println("cmd.getOptionValue(optName) = " + cmd.getOptionValue("mask"));
+        String fileName;
+        if (cmd.hasOption("mask-file")) {
+            fileName = cmd.getOptionValue("mask-file");
+            if (!new File(fileName).exists()) {
+                System.err.println("mask-file does not exist: " + fileName);
+                System.exit(1);
+            }
+        } else if (onlyIfExists) {
+            fileName = Util.replaceExtension(videoFile, ".json");
+            System.out.println("Checking existence of mask file " + fileName);
+            if (!new File(fileName).exists()) {
+                // Silently return
+                System.out.println("Doesn't exist");
+                return;
+            }
+        } else {
+            return;
+        }
+        try {
+            System.out.println("mask fileName = " + fileName);
+            params.trParams.setMask(new Region(new FileReader(fileName)));
+        } catch (IOException e) {
+            System.err.println("Error reading " + fileName + ": " + e.getLocalizedMessage());
+            System.exit(1);
+        }
     }
 
     private static TrackCSVWriter getTrackCSVWriter(Params params, CommandLine cmd, boolean hasKalmanTracker, String fileName) {
