@@ -76,6 +76,7 @@ public class MainController extends HeadlessController implements MotionDetector
 //    public ScrollPane imageScroller;
     @FXML private Label msg;
     @FXML private Slider frameSlider;
+    @FXML public Label frameNumLbl;
 
     // Playback parameters
     private FrameTimer timer = new FrameTimer();
@@ -281,6 +282,7 @@ public class MainController extends HeadlessController implements MotionDetector
             Image image = Util.mat2BufferedImage(frame);
             runAndWait(() -> {
                 imageView.imageProperty().set(image);
+                frameNumLbl.setText("" + frameIndex);
                 // Ugly hack to differentiate between user and programmatic slider changes
                 ignoreSliderChanges = true;
                 frameSlider.valueProperty().set(frameIndex);
@@ -328,9 +330,13 @@ public class MainController extends HeadlessController implements MotionDetector
      * adjusted by the specified zoom factor.
      */
     private void adjustViewToVideo(double zoomLevel) {
-        this.zoomLevel = zoomLevel;
-//        imageView.setFitWidth(this.videoPlayer.fWidth * zoomLevel);
-//        imageView.setFitHeight(this.videoPlayer.fHeight * zoomLevel);
+            /* THIS DOESN"T WORK - need to rethink it
+        if (zoomLevel != this.zoomLevel) {
+            this.zoomLevel = zoomLevel;
+            imageView.setFitWidth(this.videoPlayer.getfWidth() * zoomLevel);
+            imageView.setFitHeight(this.videoPlayer.getfHeight() * zoomLevel);
+        }
+            */
     }
 
     /**

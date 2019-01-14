@@ -41,7 +41,6 @@ import java.nio.file.Path;
 import java.util.Properties;
 
 import static com.jim.util.Util.join;
-import static com.jim.util.Util.parseSize;
 
 @SuppressWarnings({"WeakerAccess", "SameParameterValue"})
 public class ParamsBuilder {
@@ -90,7 +89,7 @@ public class ParamsBuilder {
         options.addOption("s", "playback-speed", true, "playback speed (default 1)");
         options.addOption("t", "track",false, "visually track object");
         options.addOption("a", false, "rotate window to tracking angle");
-        options.addOption(null, "frame-size", true, "output frame size (default <width>x<height>, default same as input video after resizing)");
+// No longer works        options.addOption(null, "frame-size", true, "output frame size (default <width>x<height>, default same as input video after resizing)");
 
         // Options controlling moving object detection
 
@@ -189,8 +188,9 @@ public class ParamsBuilder {
         params.grParams.showFlow = cmd.hasOption("display-flow");
         if(cmd.hasOption("background-method"))
             bgDescr = cmd.getOptionValue("background-method");
-        if (cmd.hasOption("frame-size"))
-            params.grParams.playbackSize = parseSize(cmd.getOptionValue("frame-size"));
+        // No longer works
+        //        if (cmd.hasOption("frame-size"))
+        //            params.grParams.playbackSize = parseSize(cmd.getOptionValue("frame-size"));
         params.grParams.playbackSpeed = doubleArg(cmd, "s", params.grParams.playbackSpeed);
         params.srcParams.resizeWidth = doubleArg(cmd, "resize", params.srcParams.resizeWidth);
         params.trParams.equalize = cmd.hasOption("equalize");

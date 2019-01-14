@@ -16,35 +16,39 @@
       <fx:include fx:id="paramsForm" source="ParamsForm.fxml" />
    </right>
    <bottom>
-      <HBox fx:id="menuContainer" alignment="CENTER_LEFT" spacing="2.0" style="-fx-background-color: #cfcfcf;" BorderPane.alignment="CENTER">
+      <HBox fx:id="menuContainer" alignment="CENTER_LEFT" spacing="2.0" style="-fx-background-color: #cfcfcf;"
+            BorderPane.alignment="CENTER">
          <BorderPane.margin>
-            <Insets bottom="2.0" left="2.0" top="2.0" />
+            <Insets bottom="2.0" left="2.0" top="2.0"/>
          </BorderPane.margin>
-         <children>
-            <Button fx:id="playButton" minWidth="70.0" mnemonicParsing="false" onAction="#togglePlaying" text="Play" />
-            <Button fx:id="slowerBtn" minWidth="70.0" mnemonicParsing="false" onAction="#playSlower" text="Slower" />
-            <Button fx:id="fasterBtn" minWidth="70.0" mnemonicParsing="false" onAction="#playFaster" text="Faster" />
-            <!--<Button minWidth="70.0" mnemonicParsing="false" onAction="#zoomOut" text="Zoom out" />-->
-            <!--<Button minWidth="70.0" mnemonicParsing="false" onAction="#zoomIn" text="Zoom in" />-->
-            <Label fx:id="msg" text="Frame:">
-               <HBox.margin>
-                  <Insets left="4.0" />
-               </HBox.margin>
-            </Label>
-            <Slider fx:id="frameSlider" showTickLabels="true" />
-            <Button fx:id="scaleBtn" minWidth="70.0" mnemonicParsing="false" onAction="#popupScaleDlg" text="Scale">
-               <HBox.margin>
-                  <Insets left="10.0" />
-               </HBox.margin>
-            </Button>
-            <Button fx:id="maskBtn" minWidth="70.0" mnemonicParsing="false" onAction="#popupMaskDlg" text="Mask" />
-         </children>
          <opaqueInsets>
-            <Insets />
+            <Insets/>
          </opaqueInsets>
          <padding>
-            <Insets top="2.0" />
+            <Insets top="2.0"/>
          </padding>
+         <Button fx:id="playButton" minWidth="70.0" mnemonicParsing="false" onAction="#togglePlaying" text="Play"/>
+         <Button fx:id="slowerBtn" minWidth="70.0" mnemonicParsing="false" onAction="#playSlower" text="Slower"/>
+         <Button fx:id="fasterBtn" minWidth="70.0" mnemonicParsing="false" onAction="#playFaster" text="Faster"/>
+         <!--<Button minWidth="70.0" mnemonicParsing="false" onAction="#zoomOut" text="Zoom out" />-->
+         <!--<Button minWidth="70.0" mnemonicParsing="false" onAction="#zoomIn" text="Zoom in" />-->
+         <Label fx:id="msg" text="Frame:">
+            <HBox.margin>
+               <Insets left="4.0"/>
+            </HBox.margin>
+         </Label>
+         <Slider fx:id="frameSlider" showTickLabels="true"/>
+         <Label fx:id="frameNumLbl" minWidth="36.0" text="0" textAlignment="RIGHT">
+            <padding>
+               <Insets left="10.0"/>
+            </padding>
+         </Label>
+         <Button fx:id="scaleBtn" minWidth="70.0" mnemonicParsing="false" onAction="#popupScaleDlg" text="Scale">
+            <HBox.margin>
+               <Insets left="4.0"/>
+            </HBox.margin>
+         </Button>
+         <Button fx:id="maskBtn" minWidth="70.0" mnemonicParsing="false" onAction="#popupMaskDlg" text="Mask"/>
       </HBox>
    </bottom>
 </BorderPane>

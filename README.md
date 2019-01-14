@@ -58,7 +58,7 @@ Options can also be specified in the defaults file (see option `defaults`), whic
 
 <a id="Input"></a>
 #### Input files
-* `--defaults <file>` specifies the name of an defaults file which contains any option values.
+* `--defaults <file>` specifies the name of an defaults file which contains any option values. Ignored if specified in the defaults file.
 * `--video <file>` specifies the input video file name. Alternatively, just add the file name to the command line without an option.
 * `--view-rotation {0|90|180|-90}` angle to rotate video before processing (but after optional resizing).
 * `--resize <size>` resizes the input video to have the specified width. This affects all subsequent operations, 
@@ -220,7 +220,7 @@ ___
 <a id="Tracks"></a>
 ### Creating tracks
 
-To create tracks, detected objects must be combined between frames. 
+To create tracks, detected objects must be combined across frames. 
 A Kalman filter (option `-k <arg>`, `--kalman <arg>`) is used to combine detected objects across frames into 
 tracks. The filter `<arg>` can be one of `veryfast`, `fast`, `normal`, `slow`, or `veryslow`. 
 The maximum distance (in pixels) is specified 
