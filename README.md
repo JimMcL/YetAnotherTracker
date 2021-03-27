@@ -123,7 +123,7 @@ video.
 
 The `Mask` button may be used to create a mask by drawing it on the video. Click the `Save` button 
 to write the mask JSON to a file with the same name as the input video file, and extension `.json`.
-be aware that changing a mask while analysing can lead to some surprising artifacts. It is best to define 
+Be aware that changing a mask while analysing can lead to some surprising artifacts. It is best to define 
 a new mask, save it to a file, then restart the analysis specifying the new mask file. As a convenience,
 the command line option `--mask true` will use a mask file with name `<video file>.json` if it exists,
 and silently do nothing if the file doesn't exist.
@@ -167,7 +167,7 @@ averaging 1 or more frames which are first converted to greyscale then Gaussian 
 by the option `--blur-size n`, `--blur-size 0` prevents blur from being applied). Background method must be one of `FirstFrames:n`, `none`, `PreviousFrames:n`, 
 or `FullMovie`, where `n` is the number of frames to be averaged.  The subtracted 
 image is then thresholded: pixel values greater than the threshold are considered 
-foreground. 
+foreground. Background method `none` performs no background subtraction.
 
 The threshold method must be one of `adaptive` (the default), `otsu` or `global`, as specified by the 
 option `--threshold-method <method>`. 
@@ -187,10 +187,10 @@ background construction and background subtraction respectively.
 Uses a K-nearest neighbours - based Algorithm 
 (see the OpenCV class `cv::bgsegm::BackgroundSubtractorKNN`).
 The `history` parameter specifies how many past frames are used to calculate the background. 
-`dist2Threshold` varies the level used to diffeentiate between foreground and background.
-`detectShadows` should be `true` of `false`. When `true`, a more accurate shape may be obtained 
+`dist2Threshold` varies the level used to differentiate between foreground and background.
+`detectShadows` should be `true` or `false`. When `true`, a more accurate shape may be obtained 
 from good quality videos, but `false` may be more suitable when foreground and background are
-difficult to differentiate. Experiment with different values, and use the `--display-trheshold` 
+difficult to differentiate. Experiment with different values, and use the `--display-threshold` 
 option to visualise the results. 
 
     --foreground-segmenter MOG
@@ -204,7 +204,7 @@ The parameters are much the same for `MOG` as for `KNN`.
 After foreground segmentation (using either background subtraction, MOG or KNN), the foreground regions 
 may expanded ("dilated") to merge close small regions, 
 and/or contracted. The option `--dilation-erosion <list>` specifies a comma-separated list of 
-dilation of erosion sizes. Negative values indicate erosion, positive values indicate dilation. For example, 
+dilation or erosion sizes. Negative values indicate erosion, positive values indicate dilation. For example, 
 the value `4,-2` will dilate by 4 pixels then erode by 2.
  
 `--display-threshold` displays the result after segmentation and dilation.

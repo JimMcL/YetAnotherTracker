@@ -56,6 +56,7 @@ public class FrameLoop {
             // Clone the raw frame because the frame object gets modified
             if (rawFrame.size().width > 0) // rawFrame is empty at EOF
                 frame = rawFrame.clone();
+            // Apply optional rotation, scaling to the frame
             sz = transformFrame(srcParams, sz, frame);
 
             // Maybe equalize histogram
