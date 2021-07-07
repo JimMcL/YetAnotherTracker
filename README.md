@@ -7,6 +7,11 @@ This application is a toolkit, providing a means to chain together various compu
 such, an understanding of computer vision techniques is very useful. Graphical output is provided as a
 debugging/comprehension tool to aid in determining the best parameters for a task.
 
+It works by defining the algorithms and parameters to be used, then applying them to a video. There is no interactive
+control; you just define everything then let it run. By default, you can watch what is happening, however if you are
+confident that it will run correctly, the option `--headless` runs the tracking in the background with no user interface
+at all. This is the fastest way to run tracking.
+
 There will usually be many false tracks generated as a result of noise, physical vibrations or lighting fluctuations.
 These false tracks generally start and end in roughly the same location, so real tracks may be identifiable by their
 long length, maximum displacement or diffusion distance or maximum number of points in the track (although clearly none
