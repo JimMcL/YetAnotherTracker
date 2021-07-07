@@ -4,7 +4,7 @@
 @REM
 @REM System requirements:
 @REM Java
-@REM OpenCV 3.2
+@REM OpenCV 3.4
 @REM
 
 
@@ -17,8 +17,6 @@ set OCVD=C:\Jim\products\OpenCV-342\build\java
 set CP=%OCVD%\opencv-342.jar
 
 @REM Java location
-@REM set JAVA=C:\Program Files\Java\jre-10.0.2\bin\java.exe
-@REM set JAVA=C:\Program Files\Java\jdk-11.0.1\bin\java.exe
 set JAVA=java
 
 @REM --- Configurable variables ---

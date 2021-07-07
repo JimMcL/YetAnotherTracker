@@ -24,7 +24,9 @@ know what a command line application is and how to use it.
 
 ## Installation
 
- * Download this application.
+ * Download this application. Alternatively, just download the jar file 
+   ([YetAnotherTracker.jar](https://github.com/JimMcL/YetAnotherTracker/blob/master/out/artifacts/YetAnotherTracker_jar/YetAnotherTracker.jar)).
+   jar) and the bat file ([YetAnotherTracker.bat](https://github.com/JimMcL/YetAnotherTracker/raw/master/YetAnotherTracker.bat)).
  * If you have not previously done so, install Java.
  * Install the OpenCV library (https://opencv.org/).
 
