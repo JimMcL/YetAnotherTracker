@@ -151,7 +151,7 @@ public class PopupMask extends Popup {
         polygonDefiner = new PolygonDefiner(this::drawMask, this::onMaskFinished).startDrawing(imageView);
         graphicPoly = new GraphicPolygon();
         graphicPoly.setColour(Util.RGB(128, 200, 255));
-        graphicPoly.setWidth(4);
+        graphicPoly.setWidth(1);
         graphicPoly.setCloseWithDifferentSymbology(false);
     }
 

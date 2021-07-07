@@ -77,7 +77,8 @@ turn off autorun and display the scale measurement dialog box.
 
 * `--view-scale <number>` specifies the display scale _after resizing_ (see the `--resize` option).    
 * `--view-width <number> <units>`, `--view-height <number> <units>` width/height of video frame in real world units, eg. `view-width=600mm`. 
-   You must specify the view size if you want the output CSV file in real world units rather than pixels (see option `csv-units`).
+   You must specify either the view size or view scale if you want the output CSV file in real world units rather than 
+  pixels (see option `csv-units`).
 
 <a id="Output"></a>
 #### Output files  
@@ -114,12 +115,12 @@ or else scaled to the units specified in the options `view-scale`, `view-width` 
 ### Region of interest
 You can exclude parts of the video from analysis by defining a mask, which is simply one 
 or more polygons. The mask may define the regions to be processed, or the regions to be 
-excluded from processing. The polygons are define in a file using the
+excluded from processing. The polygons are defined in a file using the
 [JSON](https://www.json.org/) format, specified with the option `--mask-file <json>`. 
 The file should contain 2 values, `includeRegion` (boolean) and `points` (array of arrays 
 of points which are objects with `x` and `y` values). Each array of points defines a polygon.
 Points use the coordinate system of the untransformed 
-video. 
+video, i.e. pixels. 
 
 The `Mask` button may be used to create a mask by drawing it on the video. Click the `Save` button 
 to write the mask JSON to a file with the same name as the input video file, and extension `.json`.
@@ -235,10 +236,13 @@ to old, stopped, tracks. The `<weight>` value is multiplied by the 'age' of the 
 (number of frames) since last detection to obtain a weighted distance between the object and the track. 
 
 
-You can ignore the starting frames using the 
+You can prevent tracking from occurring during the starting frames with the 
 option `--first-tracking-frame <frame>`, which may be useful if the start of the video is noisy or 
-the camera is settling. Similarly, the option `--no-new-tracks` prevents any new tracks from being created 
-after the starting frame.
+the camera is settling. Similarly, the option `--no-tracks-after <frame>` prevents any new tracks from being created 
+after the specified frame.
+
+You can delete tracks that have not moved after some number of frames by setting `--retirement-age <frames>`. This 
+may be useful for videos that are noisy at the start, creating a lot of tracks that never move again.
 
 By default, when a track leaves the screen, it is treated as though it stopped where it disappeared.
 If you specify a positive value for `--termination-border <pixels>`, tracks which stop

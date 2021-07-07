@@ -50,8 +50,11 @@ public class Main extends Application {
 
     public static void main(String[] args) throws IOException {
 
-        // load the native OpenCV library
+        // Load the native OpenCV library
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        if (Core.getVersionMajor() < 3 || (Core.getVersionMajor() == 3 && Core.getVersionMinor() < 4))
+            throw new RuntimeException("Require OpenCV version 3.4 or later, " +
+                    Core.getVersionString() + " is installed");
 
         params = ParamsBuilder.build(args);
 

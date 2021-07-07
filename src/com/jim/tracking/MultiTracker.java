@@ -25,9 +25,9 @@ import java.util.List;
 public class MultiTracker implements MotionDetector.Filter {
 
     private static long nextObjectId = 0;
-    private KalmanTrack.Cfg cfg;
-    private int firstFrameToProcess;
-    private boolean allowNewTracks;
+    private final KalmanTrack.Cfg cfg;
+    private final int firstFrameToProcess;
+    private final int noTracksAfter;
     private List<TrackWithEllipse> trackingObjects = new ArrayList<>();
 
     private static final int TR_UNASSIGNED = -1;
@@ -35,18 +35,17 @@ public class MultiTracker implements MotionDetector.Filter {
     private static final int OBJ_UNASSIGNED = -1;
     private static final int OBJ_NO_TRACK = -2;
     private static final int OBJ_NEW_TRACK = OBJ_UNASSIGNED;
+    private boolean alreadyWarnedEmpty = false;
 
     /**
-     *
-     * @param cfg Kalman filter configuration.
+     *  @param cfg Kalman filter configuration.
      * @param firstFrameToProcess No tracks will be created before this frame.
-     * @param allowNewTracks If true, new tracks can be created at any time.
-     *                       If false, tracks can only be created in the first frame.
+     * @param noTracksAfter If true, new tracks cannot be created after this frame number.
      */
-    public MultiTracker(KalmanTrack.Cfg cfg, int firstFrameToProcess, boolean allowNewTracks) {
+    public MultiTracker(KalmanTrack.Cfg cfg, int firstFrameToProcess, int noTracksAfter) {
         this.cfg = cfg;
         this.firstFrameToProcess = firstFrameToProcess - 1; // Convert 1-based index to 0-based
-        this.allowNewTracks = allowNewTracks;
+        this.noTracksAfter = noTracksAfter;
     }
 
     // =========================================================================
@@ -55,10 +54,20 @@ public class MultiTracker implements MotionDetector.Filter {
     @Override
     public void handle(List<MotionDetector.DetectedObject> detectedObjects, List<TrackWithEllipse> tracks, Mat greyFrame, Mat feedbackImage, Params opts, VideoPlayer camera) {
 
-        if (camera.getFrameIndex() >= firstFrameToProcess) {
+        int frameIndex = camera.getFrameIndex();
+        if (frameIndex >= firstFrameToProcess) {
             // Try to match detected objects to existing tracked objects
-            trackingObjects = trackMulti(detectedObjects, trackingObjects, opts, allowNewTracks || camera.getFrameIndex() == firstFrameToProcess, greyFrame.size(), camera.getFrameIndex());
+            trackingObjects = trackMulti(detectedObjects, trackingObjects, opts,
+                    frameIndex <= noTracksAfter, greyFrame.size(), frameIndex);
             tracks.addAll(trackingObjects);
+
+            if (tracks.isEmpty()) {
+                if (!alreadyWarnedEmpty)
+                    System.out.println("Warning: no tracks at frame " + frameIndex);
+                alreadyWarnedEmpty = true;
+            } else {
+                alreadyWarnedEmpty = false;
+            }
 
             if (opts.grParams.showTracks) {
                 for (TrackWithEllipse track : trackingObjects) {
@@ -139,21 +148,29 @@ public class MultiTracker implements MotionDetector.Filter {
             if (action == TR_STOPPED) {
                 // Optionally terminate a track if it goes outside the region.
                 // The region is either the mask if it exists, or else just the frame bounds
-                Region mask = params.trParams.getTransformedMask();
-                // If no mask, use image bounds
-                if (mask == null)
-                    mask = new Region(true, new Rect(new Point(), imageSize));
-                if (params.trParams.terminationBorder > 0 &&
-                        mask.pointInside(track.getLastPredictedPoint()) < params.trParams.terminationBorder) {
+                if (params.trParams.terminationBorder > 0) {
+                    Region mask = params.trParams.getTransformedMask();
+                    // If no mask, use image bounds
+                    if (mask == null)
+                        mask = new Region(true, new Rect(new Point(), imageSize));
+                    if (mask.pointInside(track.getLastPredictedPoint()) < params.trParams.terminationBorder) {
+                        add = false;
+                        System.out.println("Removing track " + i + ", terminationBorder = " + params.trParams.terminationBorder + " (frame " + frameNumber + ")");
+                    }
+                }
+                if (add && params.trParams.trackRetirementAge > 0 &&
+                        frameNumber - track.getLastDetectedAt() > params.trParams.trackRetirementAge) {
                     add = false;
+                    System.out.println("Retiring track " + i + ", age = " + (frameNumber - track.getLastDetectedAt()) + ", frame " + frameNumber);
                 }
                 track.stopped();
             } else {
                 track.apply(objectsArr[action].currentPos());
                 track.setLastDetectedAt(frameNumber);
             }
-            if (add)
+            if (add) {
                 result.add(track);
+            }
         }
 
         // Create any new tracks
@@ -351,7 +368,7 @@ public class MultiTracker implements MotionDetector.Filter {
         // load the native OpenCV library
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-        MultiTracker mt = new MultiTracker(new KalmanTrack.Cfg("fast"), 0, true);
+        MultiTracker mt = new MultiTracker(new KalmanTrack.Cfg("fast"), 0, 0);
         // Invent some objects
         List<MotionDetector.DetectedObject> objects = new ArrayList<>();
         objects.add(new MotionDetector.DetectedObject(new Point(0, 0)));

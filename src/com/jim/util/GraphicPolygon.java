@@ -4,7 +4,6 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
-import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
@@ -53,7 +52,6 @@ public class GraphicPolygon implements GraphicAnnotation {
             // Optionally close the polygon with a different symbology
             if (closeWithDifferentSymbology) {
                 MatOfPoint matOfPoint = pts.get(0);
-                Size np = matOfPoint.size();
                 Point[] pa = matOfPoint.toArray();
                 if (pa.length > 1) {
                     Imgproc.line(mat, pa[0], pa[pa.length - 1], closingColour, width);

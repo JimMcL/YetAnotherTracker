@@ -28,9 +28,9 @@ import static java.lang.Math.sin;
 /** Defines a spatial region which can be used to define a subset of the area of a video to be processed. */
 @SuppressWarnings("WeakerAccess")
 public class Region {
-    private boolean includeRegion;
+    private final boolean includeRegion;
     // List of lists of points. Each inner list is a polygon
-    private List<List<Point>> points;
+    private final List<List<Point>> points;
     // Points in a format usable by opencv polygon drawing methods
     private transient List<MatOfPoint> pts;
     // Points in a format suitable for point in polygon tests
@@ -213,10 +213,11 @@ public class Region {
         return new Rect(new Point(minX, minY), new Point(maxX, maxY));
     }
 
-    /** Returns true if the specified point lies inside this region.
+    /** Returns the distance of point from this region. The distance will be 0 if the point lies inside or on the
+     * border.
      * The value of the field {@link #isIncludeRegion() includeRegion} is ignored.  */
     public double pointInside(Point point) {
-        double dist = 1;
+        double dist = 0;
         for (MatOfPoint2f points : getMatOfPoints2f()) {
             double d = Imgproc.pointPolygonTest(points, point, true);
             if (d > dist)

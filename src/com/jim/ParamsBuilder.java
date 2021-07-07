@@ -116,11 +116,12 @@ public class ParamsBuilder {
         options.addOption(null, "mask-file", true, "JSON file defining region of interest");
         options.addOption(null, "mask", true, "If true and <filename>.json file exists, it is used as a mask file name (default " + checkForMask + ")");
         options.addOption(null, "termination-border", true, "Tracks which stop moving within this distance of the border will be terminated (default not terminated)");
+        options.addOption(null, "retirement-age", true, "terminate tracks that have not been detected for this many frames (default not terminated)");
 
         // Object tracking options
         options.addOption("k", "kalman",true, "object tracking using a kalman filter");
         options.addOption(null, "first-tracking-frame",true, "first frame to calculate tracks for (default " + firstTrackingFrame + ")");
-        options.addOption(null, "no-new-tracks",false, "if specified, tracks are only created in the first frame");
+        options.addOption(null, "no-tracks-after",true, "if specified, tracks are not created after the specified frame");
 
         // Output file options
         options.addOption("o",  "output", true, "output CSV or video file name");
@@ -210,13 +211,14 @@ public class ParamsBuilder {
         params.trParams.minGap = doubleArg(cmd, "min-gap", params.trParams.minGap);
         params.trParams.ageWeighting = doubleArg(cmd, "age-weighting", params.trParams.ageWeighting);
         params.trParams.terminationBorder = doubleArg(cmd, "termination-border", params.trParams.terminationBorder);
+        params.trParams.trackRetirementAge = intArg(cmd, "retirement-age", params.trParams.trackRetirementAge);
 
         // Filters (order is important)
         final boolean hasKalmanTracker = cmd.hasOption("k");
         if(hasKalmanTracker) {
             firstTrackingFrame = intArg(cmd, "first-tracking-frame", firstTrackingFrame);
-            boolean allowNewTracks = !cmd.hasOption("no-new-tracks");
-            params.trParams.filters.add(new MultiTracker(new KalmanTrack.Cfg(cmd.getOptionValue("k")), firstTrackingFrame, allowNewTracks));
+            int noTracksAfter = intArg(cmd, "no-tracks-after", Integer.MAX_VALUE);
+            params.trParams.filters.add(new MultiTracker(new KalmanTrack.Cfg(cmd.getOptionValue("k")), firstTrackingFrame, noTracksAfter));
         }
         if(cmd.hasOption("t"))
             params.trParams.filters.add(new FeedbackTracker());

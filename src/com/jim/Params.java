@@ -136,6 +136,8 @@ public class Params {
         public double terminationBorder = -1;
         /** Factor to apply (pixels/frame) when determining how to penalise old tracks when matching detected objects to tracks. */
         public double ageWeighting = 0;
+        /** If > 0, tracks which haven't been detected for this number of frames are deleted. */
+        public int trackRetirementAge = 0;
 
         /** Region of interest - used to ignore extraneous movement etc.
          * This region is in untransformed source image coordinates. */
