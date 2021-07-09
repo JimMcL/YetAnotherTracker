@@ -30,6 +30,8 @@ used to interactively define a region of interest or the display scale.
 The right-hand panel is mainly empty, but can be used to interactively experiment with the contour filter
 settings `min-contour`, `max-contour`, `min-contour-length` and `max-contour-length`.
 
+<a id="Installation"></a>
+
 ## Installation
 
 * Download this application. Alternatively, just download the jar file
