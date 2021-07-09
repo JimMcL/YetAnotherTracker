@@ -30,6 +30,9 @@ used to interactively define a region of interest or the display scale.
 The right-hand panel is mainly empty, but can be used to interactively experiment with the contour filter
 settings `min-contour`, `max-contour`, `min-contour-length` and `max-contour-length`.
 
+There is some basic R functionality to simplify working with the output from this program in 
+[R](https://www.r-project.org/) in [API/R](API/R).   
+
 <a id="Installation"></a>
 
 ## Installation
