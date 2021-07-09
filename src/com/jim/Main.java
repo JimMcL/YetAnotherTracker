@@ -51,7 +51,6 @@ public class Main extends Application {
     public static void main(String[] args) throws IOException {
 
         // Load the native OpenCV library
-        System.out.println("Loading library " + Core.NATIVE_LIBRARY_NAME);
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         if (Core.getVersionMajor() != 4 || Core.getVersionMinor() != 5 || Core.getVersionRevision() != 2)
             throw new RuntimeException("Require OpenCV version 4.5.2, " +
