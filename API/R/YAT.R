@@ -5,7 +5,7 @@
 # 
 # # Example 1: plot a single trajectory and mask
 # # There should be 1 long track in this file
-# csvFile <- "C:/Jim/uni/Papers and talks/Jess spider movements/data/Videos/Myrmarachne smaragdina/S141_M1_OA_21_05_24_Trim.csv"
+# csvFile <- "S141_M1_OA_21_05_24_Trim.csv"
 # trj <- TrajFromCoords(YATReadLongestTrackPoints(csvFile), timeCol = "Time")
 # # Scale from pixels to mm
 # scale <- 0.56
@@ -19,7 +19,7 @@
 # lines(arena, lwd = 2, col = "#802010")
 # 
 # Example 2: Plot all the trajectories in the file that are at least 100 mm long. This can be used to help diagnose tracking problems
-YATPlotTrjs(csvFile, minLengthToPlot = 100, blueIfShorterThan = 150)
+# YATPlotTrjs(csvFile, minLengthToPlot = 100, blueIfShorterThan = 150)
 
 
 library(trajr)
