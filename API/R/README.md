@@ -6,3 +6,5 @@ and plot all trajectories in a CSV file.
 
 These function make use of the [trajr](https://cran.rstudio.com/web/packages/trajr/vignettes/trajr-vignette.html) 
 package internally, and simplify importing trajectories into `trajr`, but don't require you to use it.
+
+To use it, download the R file [YAT.R](YAT.R) and source it from your own script.
