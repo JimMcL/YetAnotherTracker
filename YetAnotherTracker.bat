@@ -4,35 +4,35 @@
 @REM
 @REM System requirements:
 @REM Java
-@REM OpenCV 3.4
+@REM OpenCV
 @REM
 
 
-@REM The jar file includes the 64 bit opencv DLL, opencv_java342.dll, which seems to include ffmpeg
 
 @REM --- Configurable variables ---
 
+@REM The jar file includes the OpenCV jar file. You need to specify where OpenCV
+@REM is located so that the runtime library can be found
+
 @REM openCV location
-set OCVD=C:\Jim\products\OpenCV-342\build\java
-set CP=%OCVD%\opencv-342.jar
+set OCVD=C:\Jim\products\opencv-452
 
 @REM Java location
 set JAVA=java
 
-@REM --- Configurable variables ---
+@REM --- End configurable variables ---
 
-@REM This should not need to be edited.
-@REM FFMPEG location
-@REM Add the location of the FFMPEG DLL to the PATH environment variable. This is required to e.g. read mp4
-@REM set PATH=%PATH%;%OCVD%\x64
-
-
-set OPENCVLIBDIR=%OCVD%\x64
-@REM library for writing h264 video (maybe not used?)
-set OPENH264_LIBRARY_PATH=C:\Jim\products\openh264\openh264-1.6.0-win64msvc.dll
+set OPENCVLIBDIR=%OCVD%\build\java\x64
 
 set YAT=%~dp0
-set JAR=%YAT%\out\artifacts\YetAnotherTracker_jar\YetAnotherTracker.jar
 
-"%JAVA%" "-Djava.library.path=%OPENCVLIBDIR%" -classpath "%CP%" -jar "%JAR%" %*
+@REM Try to find the jar file
+if exist %YAT%\out\artifacts\YetAnotherTracker_jar\YetAnotherTracker.jar (
+  set JAR=%YAT%\out\artifacts\YetAnotherTracker_jar\YetAnotherTracker.jar
+)
+if exist %YAT%\YetAnotherTracker.jar (
+  set JAR=%YAT%\YetAnotherTracker.jar
+)
+
+"%JAVA%" "-Djava.library.path=%OPENCVLIBDIR%" -jar "%JAR%" %*
 

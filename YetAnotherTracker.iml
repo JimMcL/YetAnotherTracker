@@ -9,6 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="commons-cli-1" level="application" />
     <orderEntry type="library" name="gson-2.8.5" level="project" />
-    <orderEntry type="library" name="opencv-342" level="application" />
+    <orderEntry type="library" name="opencv-452" level="application" />
   </component>
 </module>

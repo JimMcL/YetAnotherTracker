@@ -15,7 +15,7 @@ at all. This is the fastest way to run tracking.
 There will usually be many false tracks generated as a result of noise, physical vibrations or lighting fluctuations.
 These false tracks generally start and end in roughly the same location, so real tracks may be identifiable by their
 long length, maximum displacement or diffusion distance or maximum number of points in the track (although clearly none
-of these are infallible tests and the best approach will depend on the nature of your tracks).
+of these are infallible tests, so the best approach will depend on the nature of your tracks).
 
 Currently, the app does not have a pretty GUI interface, rather it is controlled through command line parameters and/or
 a configuration file. To use it, you should be comfortable with editing text files and know what a command line
@@ -37,15 +37,15 @@ settings `min-contour`, `max-contour`, `min-contour-length` and `max-contour-len
   and the bat
   file ([YetAnotherTracker.bat](https://github.com/JimMcL/YetAnotherTracker/raw/master/YetAnotherTracker.bat)).
 * If you have not previously done so, install Java.
-* Install the OpenCV library (https://opencv.org/).
+* Download the OpenCV library (https://opencv.org/), version 4.5.2.
+* On Windows, edit `YetAnotherTracker.bat` to specify the locations of OpenCV. See comments within the file for details. Run it with
+  no arguments for a usage message.
 
 ## Running the application
 
 ### Windows
 
-The bat file `YetAnotherTracker.bat` may be used to run the application on Windows. Edit the file to specify the
-locations of the Java runtime and OpenCV. See comments within the file for details. Run it with no arguments for a usage
-message.
+The bat file `YetAnotherTracker.bat` may be used to run the application on Windows.
 
 You can safely ignore the warning:
 `WARNING: Could not open/create prefs root node Software\JavaSoft\Prefs at root 0x80000002. Windows RegCreateKeyEx(...) returned error code 5.
