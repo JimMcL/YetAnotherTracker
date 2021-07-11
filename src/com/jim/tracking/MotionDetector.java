@@ -44,7 +44,6 @@ public class MotionDetector implements FrameLoop.Handler {
         public Point currentPos() {
             return centroid;
 //            return keyPoint.pt;
-//            return new Point((centroid.x + keyPoint.pt.x) / 2, (centroid.y + keyPoint.pt.y) / 2);
         }
     }
 
@@ -75,6 +74,7 @@ public class MotionDetector implements FrameLoop.Handler {
             System.out.println("Input " + params.srcParams.videoFile + ", fps = " + cameraInfo.getFps() + ", resolution " + cameraInfo.getfWidth() + "x" + cameraInfo.getfHeight());
 
         updateTransformedMask();
+        // Update the transformed mask whenever the tracker parameters change
         ObserverMgr.getInstance().observe(params.trParams, object -> updateTransformedMask());
     }
 

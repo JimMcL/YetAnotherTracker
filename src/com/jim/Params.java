@@ -158,7 +158,8 @@ public class Params {
 
         /** Mask, transformed in the same way as the input video.
          * This is a hack, and doesn't really belong here,
-         * but I can't decide where it should be. */
+         * but I can't decide where it should be. It is derived from the
+         * untransformed mask and view transformation parameters. */
         private Region transformedMask;
 
         /** Units in output CSV file. Not actually used for now. */
