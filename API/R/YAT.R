@@ -75,6 +75,14 @@ YATReadMask <- function(csvFile, scale = 1, failIfMissing = TRUE, flipCoords = T
   pts
 }
 
+# reads the masks for multiple videos, and returns them as a list of coordinate data frames.
+YATReadMasks <- function(files, scales = 1, failIfMissing = TRUE, flipCoords = TRUE) {
+  if (length(scales) == 1)
+    scales <- rep(scales, times = length(files))
+  lapply(seq_along(files), function(i) {
+    YATReadMask(files[i], scales[i], failIfMissing, flipCoords)
+  })
+}
 
 # Reads a set of points from a CSV file, and returns the points in the longest
 # track. The file may contain multiple tracks due to noise in the video
