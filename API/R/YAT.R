@@ -19,7 +19,7 @@
 # lines(arena, lwd = 2, col = "#802010")
 # 
 # Example 2: Plot all the trajectories in the file that are at least 100 mm long. This can be used to help diagnose tracking problems
-# YATPlotTrjs(csvFile, minLengthToPlot = 100, blueIfShorterThan = 150)
+# YATPlotTrjs(csvFile, plotMinLength = 100, redMinLength = 150)
 
 
 library(trajr)
@@ -163,13 +163,13 @@ YATIdentifyLongTracks <- function(csvFile, minLength, minDuration) {
 }
 
 
-# Plots multiple trajectories in the specified file, coloured according to some
+# Plots multiple trajectories in the specified file, optionally coloured according to some
 # criterion.
 # @param plotMinLength, plotMinDuration Minimum length/duration of trajectories to plot.
 # @param redMinLength, redMinDuration Minimum length/duration to draw in red (shorter are drawn in blue).
 YATPlotTrjs <- function(csvFile, flipCoords = TRUE, plotMask = FALSE,
-                        plotMinLength = 0.01, plotMinDuration = 0,
-                        redMinLength = 0.01, redMinDuration = 0) {
+                        plotMinLength = 0, plotMinDuration = 0,
+                        redMinLength = 0, redMinDuration = 0) {
   if (!file.exists(csvFile))
     stop(sprintf("File doesn't exist: %s", csvFile))
 
