@@ -274,6 +274,7 @@ public class ParamsBuilder {
             params.trParams.filters.add(new DebugOverlay());
 
         if (params.grParams.verbose) {
+            System.out.println("Tracking video " + params.srcParams.videoFile);
             System.out.println("OpenCV version " + Core.VERSION);
             System.out.println("Motion detector " + params.trParams.detector);
             System.out.println("Foreground segmenter " + params.trParams.foregroundSegmenter);
@@ -488,9 +489,6 @@ public class ParamsBuilder {
 
     private static void maybeSetMask(CommandLine cmd, String videoFile, boolean checkForMask, Params params) {
         boolean onlyIfExists = booleanArg(cmd, "mask", checkForMask);
-        System.out.println("onlyIfExists = " + onlyIfExists);
-        System.out.println("cmd.hasOption(optName) = " + cmd.hasOption("mask"));
-        System.out.println("cmd.getOptionValue(optName) = " + cmd.getOptionValue("mask"));
         String fileName;
         if (cmd.hasOption("mask-file")) {
             fileName = cmd.getOptionValue("mask-file");
@@ -500,17 +498,16 @@ public class ParamsBuilder {
             }
         } else if (onlyIfExists) {
             fileName = Util.replaceExtension(videoFile, ".json");
-            System.out.println("Checking existence of mask file " + fileName);
             if (!new File(fileName).exists()) {
                 // Silently return
-                System.out.println("Doesn't exist");
+//                System.out.println("Mask file doesn't exist: " + fileName);
                 return;
             }
         } else {
             return;
         }
         try {
-            System.out.println("mask fileName = " + fileName);
+//            System.out.println("Using mask file " + fileName);
             params.trParams.setMask(new Region(new FileReader(fileName)));
         } catch (IOException e) {
             System.err.println("Error reading " + fileName + ": " + e.getLocalizedMessage());

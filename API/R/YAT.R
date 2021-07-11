@@ -165,7 +165,11 @@ YATIdentifyLongTracks <- function(csvFile, minLength, minDuration) {
 
 # Plots multiple trajectories in the specified file, coloured according to some
 # criterion.
-YATPlotTrjs <- function(csvFile, flipCoords = TRUE, blueIfShorterThan = 1, plotMask = FALSE, minLengthToPlot = 0, minDurationToPlot = 0) {
+# @param plotMinLength, plotMinDuration Minimum length/duration of trajectories to plot.
+# @param redMinLength, redMinDuration Minimum length/duration to draw in red (shorter are drawn in blue).
+YATPlotTrjs <- function(csvFile, flipCoords = TRUE, plotMask = FALSE,
+                        plotMinLength = 0.01, plotMinDuration = 0,
+                        redMinLength = 0.01, redMinDuration = 0) {
   if (!file.exists(csvFile))
     stop(sprintf("File doesn't exist: %s", csvFile))
 
@@ -179,8 +183,9 @@ YATPlotTrjs <- function(csvFile, flipCoords = TRUE, blueIfShorterThan = 1, plotM
   }
 
   # What tracks should be plotted?
-  tracksToPlot <- .identifyLongTracks(points, minLengthToPlot, minDurationToPlot)
-  interestingTracks <- .identifyLongTracks(points, blueIfShorterThan, 1)
+  tracksToPlot <- .identifyLongTracks(points, plotMinLength, plotMinDuration)
+  # What colour should each trajectory be?
+  interestingTracks <- .identifyLongTracks(points, redMinLength, redMinDuration)
   
   # Calculate view extents
   xlim <- range(points$x[points$TrackId %in% tracksToPlot])
@@ -191,18 +196,20 @@ YATPlotTrjs <- function(csvFile, flipCoords = TRUE, blueIfShorterThan = 1, plotM
     lines(YATReadMask(csvFile, failIfMissing = TRUE, flipCoords = flipCoords), lwd = 2, col = "#20b090")
   }
   
-  for (tid in tracksToPlot) {
-    trj <- TrajFromCoords(points[points$TrackId == tid, ], "x", "y", "Time")
+  trjs <- lapply(tracksToPlot, function(tid) TrajFromCoords(points[points$TrackId == tid, ], "x", "y", "Time"))
+  
+  for (trj in trjs) {
+    tid <- trj$TrackId[1]
     isReal <- tid %in% interestingTracks
     col <- ifelse(isReal, "red", "blue")
-    #col <- ifelse(isReal, "#ff000040", "#0000bb40")
     plot(trj, add = TRUE, start.pt.col = col, col = col)
-    if (isReal) {
-      text(trj[1, "x"], trj[1, "y"], labels = tid)
-      cat(sprintf("%d length %g, %d points, frames %d - %d\n", 
-                  tid, TrajLength(trj), nrow(trj),
-                  trj$Frame[1], trj$Frame[nrow(trj)]))
-    }
+    text(trj[1, "x"], trj[1, "y"], labels = tid)
+    cat(sprintf("%d length %g, %d points, frames %d - %d, %s\n", 
+                tid, TrajLength(trj), nrow(trj),
+                trj$Frame[1], trj$Frame[nrow(trj)],
+                ifelse(isReal, "red", "blue")))
   }
+  
+  invisible(trjs)
 }
 
