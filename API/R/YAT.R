@@ -109,6 +109,10 @@ YATReadLongestTrackPoints <- function(fileName, flipCoords = TRUE) {
     tids[which.max(midx)]
   }
   
+  if (!file.exists(fileName)) {
+    stop(sprintf("CSV trajectory file does not exist: %s", fileName))
+  }
+  
   points <- read.csv(fileName, comment.char = '#')
   
   if (flipCoords) {
@@ -148,7 +152,7 @@ YATReadLongestTrackPoints <- function(fileName, flipCoords = TRUE) {
 # duration \code{minDuration}. Units are the units in the CSV file.
 YATIdentifyLongTracks <- function(csvFile, minLength, minDuration) {
   if (!file.exists(csvFile))
-    stop(sprintf("File doesn't exist: %s", csvFile))
+    stop(sprintf("CSV trajectory file doesn't exist: %s", csvFile))
   
   points <- read.csv(csvFile, comment.char = '#')
 
