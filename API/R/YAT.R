@@ -130,8 +130,12 @@ YATReadLongestTrackPoints <- function(fileName, flipCoords = TRUE) {
   
   # Rearrange columns
   cols <- unique(c("x", "y", "Time", names(track)))
+  track <- track[, cols]
   
-  track[, cols]
+  # Give it a filename attribute
+  attr(track, "filename") <- fileName
+  
+  track
 }
 
 
@@ -188,6 +192,8 @@ YATPlotTrjs <- function(csvFile, flipCoords = TRUE, plotMask = FALSE,
 
   # What tracks should be plotted?
   tracksToPlot <- .identifyLongTracks(points, plotMinLength, plotMinDuration)
+  if (length(tracksToPlot) == 0)
+    stop(sprintf("No trajectories are at least %g in length and %g in duration: %s", plotMinLength, plotMinDuration, csvFile))
   # What colour should each trajectory be?
   interestingTracks <- .identifyLongTracks(points, redMinLength, redMinDuration)
   
@@ -208,9 +214,11 @@ YATPlotTrjs <- function(csvFile, flipCoords = TRUE, plotMask = FALSE,
     col <- ifelse(isReal, "red", "blue")
     plot(trj, add = TRUE, start.pt.col = col, col = col)
     text(trj[1, "x"], trj[1, "y"], labels = tid)
-    cat(sprintf("%d length %g, %d points, frames %d - %d, %s\n", 
+    cat(sprintf("%s%d length %g, %d points, frames %d - %d, %g secs, %s\n", 
+                ifelse(length(trjs) > 1, "", "Track ID "),
                 tid, TrajLength(trj), nrow(trj),
                 trj$Frame[1], trj$Frame[nrow(trj)],
+                TrajDuration(trj),
                 ifelse(isReal, "red", "blue")))
   }
   
