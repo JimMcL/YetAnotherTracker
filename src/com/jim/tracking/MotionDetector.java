@@ -54,8 +54,6 @@ public class MotionDetector implements FrameLoop.Handler {
     public void run(Params params) throws IOException {
         this.params = params;
         new FrameLoop().run(this, params.srcParams.videoFile, params.grParams, params.srcParams, params.trParams);
-//        if (params.grParams.verbose)
-//            System.out.println("Finished");
     }
 
     // ==========================================================================
@@ -79,7 +77,7 @@ public class MotionDetector implements FrameLoop.Handler {
     }
 
     @Override
-    public void onFrame(Mat greyFrame, Mat colourFrame) {
+    public boolean onFrame(Mat greyFrame, Mat colourFrame) {
         if (params.grParams.verbose && params.grParams.running)
             logProgress(cameraInfo.getFrameIndex());
 
@@ -114,8 +112,14 @@ public class MotionDetector implements FrameLoop.Handler {
 
         // Apply any filters in order
         List<TrackWithEllipse> trackedObjects = new ArrayList<>();
-        for (Filter filter : params.trParams.filters) {
-            filter.handle(objects, trackedObjects, greyFrame, feedbackImage, params, cameraInfo);
+        boolean success = true;
+        try {
+            for (Filter filter : params.trParams.filters) {
+                filter.handle(objects, trackedObjects, greyFrame, feedbackImage, params, cameraInfo);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            success = false;
         }
 
         // Pass the frame to the background handler
@@ -123,6 +127,8 @@ public class MotionDetector implements FrameLoop.Handler {
                 params.trParams.backgroundHandler.canHandleColour() ? colourFrame : greyFrame);
 
         feedbackImage.release();
+
+        return success;
     }
 
     @Override
@@ -137,8 +143,8 @@ public class MotionDetector implements FrameLoop.Handler {
 
     private void logProgress(int frameIndex) {
         // Log changes every 10% of progress
-        int prev = (int) (10 * (frameIndex - 1) / cameraInfo.getNumOfFrames());
-        int curr = (int) (10 * frameIndex / cameraInfo.getNumOfFrames());
+        int prev = (int) (10 * frameIndex / cameraInfo.getNumOfFrames());
+        int curr = (int) (10 * (frameIndex + 1) / cameraInfo.getNumOfFrames());
         if (prev != curr)
             System.out.println(curr * 10 + "%");
     }
@@ -176,8 +182,8 @@ public class MotionDetector implements FrameLoop.Handler {
     }
 
     private void updateTransformedMask() {
-        Params.TrackerParams prm = params.trParams;
-        synchronized (prm) {
+        synchronized (params.trParams) {
+            Params.TrackerParams prm = params.trParams;
             prm.setTransformedMask(null);
             if (prm.getMask() != null)
                 prm.setTransformedMask(prm.getMask().transformForParams(params.srcParams, new Size(cameraInfo.getfWidth(), cameraInfo.getfHeight()), false));

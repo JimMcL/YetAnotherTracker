@@ -46,6 +46,10 @@ public class MultiTracker implements MotionDetector.Filter {
         this.cfg = cfg;
         this.firstFrameToProcess = firstFrameToProcess - 1; // Convert 1-based index to 0-based
         this.noTracksAfter = noTracksAfter;
+        if (noTracksAfter < firstFrameToProcess)
+            throw new IllegalArgumentException("Conflict in parameters: no-tracks-after (" + noTracksAfter + ") must " +
+                    "be > first-tracking-frame (" + firstFrameToProcess +
+                    ")");
     }
 
     // =========================================================================
@@ -64,6 +68,12 @@ public class MultiTracker implements MotionDetector.Filter {
             if (tracks.isEmpty()) {
                 if (!alreadyWarnedEmpty)
                     System.out.println("Warning: no tracks at frame " + frameIndex);
+                if (frameIndex > noTracksAfter) {
+                    // if running headless, might as well stop
+                    if (!opts.grParams.showWindow)
+                        throw new RuntimeException("No more tracks are possible since new tracks are not allowed after " +
+                                "frame " + noTracksAfter);
+                }
                 alreadyWarnedEmpty = true;
             } else {
                 alreadyWarnedEmpty = false;
@@ -138,6 +148,9 @@ public class MultiTracker implements MotionDetector.Filter {
             objActions = new int[0];
         }
 
+        // Record retired tracks so they can be reported
+        int nRetiredTracks = 0;
+
         // Handle existing tracks
         List<TrackWithEllipse> result = new ArrayList<>();
         for (int i = 0; i < numTracks; i++) {
@@ -161,7 +174,7 @@ public class MultiTracker implements MotionDetector.Filter {
                 if (add && params.trParams.trackRetirementAge > 0 &&
                         frameNumber - track.getLastDetectedAt() > params.trParams.trackRetirementAge) {
                     add = false;
-                    System.out.println("Retiring track " + i + ", age = " + (frameNumber - track.getLastDetectedAt()) + ", frame " + frameNumber);
+                    nRetiredTracks++;
                 }
                 track.stopped();
             } else {
@@ -172,6 +185,11 @@ public class MultiTracker implements MotionDetector.Filter {
                 result.add(track);
             }
         }
+
+        // Report number of retired tracks
+        if (nRetiredTracks > 0)
+            System.out.println("Retired " + nRetiredTracks + " track" + (nRetiredTracks == 1 ? "" : "s") +
+                            " at frame " + frameNumber + ", age exceeded " + params.trParams.trackRetirementAge);
 
         // Create any new tracks
         if (allowNewTracks) {

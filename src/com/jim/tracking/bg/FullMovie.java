@@ -51,10 +51,11 @@ public class FullMovie extends BackgroundHandler {
             }
 
             @Override
-            public void onFrame(Mat greyFrame, Mat colourFrame) throws IOException {
+            public boolean onFrame(Mat greyFrame, Mat colourFrame) throws IOException {
                 if (avg[0] == null)
                     avg[0] = Mat.zeros(greyFrame.size(), CvType.CV_64F);
                 Imgproc.accumulateWeighted(greyFrame, avg[0], 1.0 / numFrames);
+                return true; // Success
             }
 
             @Override

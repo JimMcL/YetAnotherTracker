@@ -22,7 +22,10 @@ import static org.opencv.imgproc.Imgproc.cvtColor;
 public class FrameLoop {
     public interface Handler {
         void onVideoOpened(VideoPlayer camera);
-        void onFrame(Mat greyFrame, Mat colourFrame) throws IOException;
+        /** Process a single frame.
+         * @return true on success, false if processing should be terminated.
+         */
+        boolean onFrame(Mat greyFrame, Mat colourFrame) throws IOException;
         void onDone() throws IOException;
     }
 
@@ -71,7 +74,10 @@ public class FrameLoop {
                 Imgproc.GaussianBlur(greyFrame, greyFrame, new Size(params.blurSize, params.blurSize), 0);
 
             // Do something with the frame
-            handler.onFrame(greyFrame, frame);
+            if (!handler.onFrame(greyFrame, frame)) {
+                // Processing failed - stop
+                break;
+            }
         }
         player.release();
 
