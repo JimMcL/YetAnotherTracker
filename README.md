@@ -174,12 +174,18 @@ option `--motion-detector`.
 
 #### Optical flow motion detector
 
+`--motion-detector optical-flow`
+
 There are no options to customise the optical flow motion detector. Specify the option
 `--display-flow` to draw objects detected by the optical flow motion detector on the feedback window. This works by
 first detecting potential features using Shi-Tomasi feature detection, then applying the Lucas-Kanade method with
 pyramids.
 
 #### Differences motion detector
+
+`--motion-detector differences`
+
+The differences motion detector requires a number of parameters to be specified; firstly a method for segmenting foreground from background.
 
 `--foreground-segmenter background-subtraction`
 
@@ -195,9 +201,9 @@ The threshold method must be one of `adaptive` (the default), `otsu` or `global`
 option `--threshold-method <method>`. Adaptive mean thresholding varies the threshold based on a region of pixels
 (OpenCV function adaptiveThreshold). You can vary the results of adaptive thresholding by specifying a constant
 `C` (option `-C n` or `--threshold-C n`) which is subtracted from the calculated threshold, and the block size to be
-used (option `-B n` or `--threshold-blocksize n`). Other threshold methods are `GLOBAL` which simply applies a global
+used (option `-B n` or `--threshold-blocksize n`, default block size is 5). Other threshold methods are `GLOBAL` which simply applies a global
 threshold intensity value (specified by the option `--threshold n`), and `OTSU`
-which attempts to calculate a suitable threshold value.
+which attempts to calculate a suitable threshold value. Specify `--threshold-invert` to treat dark areas as foreground and light areas as background.
 
 The options `--display-background` and `--display-subtraction` can be specified to display the results of background
 construction and background subtraction respectively.

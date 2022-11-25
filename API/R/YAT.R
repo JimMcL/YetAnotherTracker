@@ -30,19 +30,21 @@ YAT_CSV_STRUCT <- list(x = "x", y = "y", time = "Time")
 
 # Reads and returns the coordinates in the mask file for a video.
 #
-# Assumes that the mask file contains single polygon.
+# Assumes that the mask file contains a single polygon.
 #
 # @param csvFile Name of the CSV file used by YetAnotherTracker. The JSON file
 #   is expected to have the same name but with extension "JSON".
-# @param scale points are scaled by this value.
+# @param viewScale Coordinates are points are scaled divided by this value, so
+#   if --view-scale was specified on the YAT command line, the same viewScale
+#   should be specified here.
 # @param failIfMissing If the JSON file doesn't exist, throws an error when
 #   TRUE, return NULL when FALSE.
 # @param flipCoords If TRUE, converts from the y-down coordinate system of
 #   videos to the y-up coordinate system of R plots.
 #
-# @return data frame with 2 columns, x & y, containing the coordinates of the
-#   mask polygon.
-YATReadMask <- function(csvFile, scale = 1, failIfMissing = TRUE, flipCoords = TRUE) {
+# @return data frame with 2 columns, x & y, containing the coordinates
+#   in pixels of the mask polygon.
+YATReadMask <- function(csvFile, viewScale = 1, failIfMissing = TRUE, flipCoords = TRUE) {
 
   maskFile <- gsub("csv$", "json", csvFile)
   
@@ -57,6 +59,12 @@ YATReadMask <- function(csvFile, scale = 1, failIfMissing = TRUE, flipCoords = T
   mask <- fromJSON(maskFile)
   pts <- mask$points[[1]] # Assume there's only 1 polygon
 
+  # Close the polygon
+  pts[nrow(pts) + 1, ] <- pts[1, ]
+  # Scale
+  pts <- pts / scale
+
+  # Flip after scaling (since presumably the trajectory file is scaled
   if (flipCoords) {
     # Convert the coordinate system by flipping vertically
     trjPoints <- read.csv(csvFile, comment.char = '#')
@@ -64,18 +72,14 @@ YATReadMask <- function(csvFile, scale = 1, failIfMissing = TRUE, flipCoords = T
     pts$y <- maxY - pts$y
   }
   
-  # Close the polygon
-  pts[nrow(pts) + 1, ] <- pts[1, ]
-  # Scale
-  pts <- pts * scale
-  
+
   # Keep the includeRegion flag as an attribute
   attr(pts, "includeRegion") <- mask$includeRegion
   
   pts
 }
 
-# reads the masks for multiple videos, and returns them as a list of coordinate data frames.
+# Reads the masks for multiple videos, and returns them as a list of coordinate data frames.
 YATReadMasks <- function(files, scales = 1, failIfMissing = TRUE, flipCoords = TRUE) {
   if (length(scales) == 1)
     scales <- rep(scales, times = length(files))
