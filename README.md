@@ -74,7 +74,7 @@ has a single option per line, with the syntax e.g. `output=file`.
 
 #### Input files
 
-* `--defaults <file>` specifies the name of an defaults file which contains any option values. Ignored if specified in
+* `--defaults <file>` specifies the name of a defaults file which contains any option values. Ignored if specified in
   the defaults file.
 * `--video <file>` specifies the input video file name. Alternatively, just add the file name to the command line
   without an option.
@@ -94,7 +94,7 @@ Setting `--view scale ?` will automatically turn off autorun and display the sca
 
 * `--view-scale <number>` specifies the display scale _after resizing_ (see the `--resize` option).
 * `--view-width <number> <units>`, `--view-height <number> <units>` width/height of video frame in real world units,
-  eg. `view-width=600mm`. You must specify either the view size or view scale if you want the output CSV file in real
+  e.g. `view-width=600mm`. You must specify either the view size or view scale if you want the output CSV file in real
   world units rather than pixels (see option `csv-units`).
 
 <a id="Output"></a>
@@ -235,7 +235,7 @@ For example, the value `4,-2` will dilate by 4 pixels then erode by 2.
 
 ### Contour filtering
 
-Next, contours are constructed around the forground objects, and any contours whose areas are less than `--min-contour`
+Next, contours are constructed around the foreground objects, and any contours whose areas are less than `--min-contour`
 or greater than `--max-contour` are discarded. Contours can be filtered out based on their perimeter lengths which must
 be between `min-contour-length` and `max-contour-length` (if specified). The relationship between contour area and
 length allows a crude filter on shape. Any contours after the first 50 are also discarded.
@@ -262,7 +262,7 @@ track
 (number of frames) since last detection to obtain a weighted distance between the object and the track.
 
 You can prevent tracking from occurring during the starting frames with the option `--first-tracking-frame <frame>`,
-which may be useful if the start of the video is noisy or the camera is settling. Similarly, the
+which may be useful if the start of the video is noisy, or the camera is settling. Similarly, the
 option `--no-tracks-after <frame>` prevents any new tracks from being created after the specified frame.
 
 You can delete tracks that have not moved after some number of frames by setting `--retirement-age <frames>`. This may
@@ -272,7 +272,7 @@ By default, when a track leaves the screen, it is treated as though it stopped w
 positive value for `--termination-border <pixels>`, tracks which stop within the specified number of pixels of the mask
 region will be terminated.
 
-Specify `--display-tracks` to draw a cross at each track current location. Cross colour indicates the track ID.
+Specify `--display-tracks` to draw a cross at each track current location. The colour of the cross indicates the track ID.
 
 ### But again, what options should I use?
 
@@ -294,7 +294,7 @@ with
 `dist2Threshold` (threshold value between foreground and background), and `detectShadows` (`true` or `false`: if `true`,
 shadows are detected and not treated as part of the foreground).
 
-While playing with thresholding, use `--display-threshold` to visalise the results.
+While playing with thresholding, use `--display-threshold` to visualise the results.
 
 Use `--min-contour` and `--max-contour` to control what contours are kept as potential objects to be tracked, and
 use `--display-contours` to see the results.

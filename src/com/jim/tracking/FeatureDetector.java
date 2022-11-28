@@ -17,7 +17,7 @@ import static org.opencv.imgproc.Imgproc.goodFeaturesToTrack;
 public class FeatureDetector {
     // If true, use Shi-Tomasi feature detection, otherwise use ORB
     private static final boolean USE_GOOD_FEATURES = true;
-    private ORB detector;
+    private final ORB detector;
 //    private final DescriptorExtractor extractor;
 
     public FeatureDetector() {

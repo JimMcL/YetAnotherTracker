@@ -17,9 +17,9 @@ public class GraphicMeasurementLine implements GraphicAnnotation {
     private double y0;
     private double x1;
     private double y1;
-    private Scalar colour = RGB(255, 40, 30);
-    private int width = 2;
-    private double crossPieceLength = 10;
+    private final Scalar colour = RGB(255, 40, 30);
+    private final int width = 2;
+    private final double crossPieceLength = 10;
 
     public synchronized void setPixelCoords(double x0, double y0, double x1, double y1) {
         this.x0 = x0;

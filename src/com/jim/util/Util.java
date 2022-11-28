@@ -108,7 +108,7 @@ public class Util {
     public enum OrthoRotation {
         NONE(0), CW_90(-90), CCW_90(90), CW_180(180);
 
-        private int angle;
+        private final int angle;
         OrthoRotation(int angle) {
             this.angle = angle;
         }

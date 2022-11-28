@@ -80,8 +80,8 @@ public class MainController extends HeadlessController implements MotionDetector
     @FXML public Label frameNumLbl;
 
     // Playback parameters
-    private FrameTimer timer = new FrameTimer();
-    private double zoomLevel = 1;
+    private final FrameTimer timer = new FrameTimer();
+    private final double zoomLevel = 1;
     private boolean ignoreSliderChanges;
     private VideoPlayer videoPlayer;
 

@@ -11,8 +11,8 @@ import java.util.List;
  */
 public class VideoResult implements MotionDetector.Filter {
     private VideoWriter writer;
-    private String fileName;
-    private Params.GraphicParams opt;
+    private final String fileName;
+    private final Params.GraphicParams opt;
 
     public VideoResult(String fileName, Params.GraphicParams opt) {
         this.fileName = fileName;

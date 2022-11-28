@@ -9,8 +9,8 @@ import static com.jim.ui.FeedbackWindow.createWindow;
 
 /** Basic wrapper around a FeedbackWindow which allows the user to specify whether or not a particular feedback window should be displayed. */
 public class OptionalFeedbackWindow {
-    private String title;
-    private boolean show;
+    private final String title;
+    private final boolean show;
     private FeedbackWindow window;
 
     public OptionalFeedbackWindow(String title, boolean show) {

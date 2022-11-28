@@ -18,12 +18,12 @@ import java.util.Map;
 public class TrackCSVWriter extends CSVWriter implements MotionDetector.Filter {
 
     private static final String CSV = ".csv";
-    private boolean writeAllFrames;
-    private int fps;
+    private final boolean writeAllFrames;
+    private final int fps;
     private static final String[] HEADERS = {"Frame", "Time", "TrackId", "x", "y", "ValueChanged"};
     private boolean writeTracks;
     // Keep track of frames which were skipped in output
-    private Map<Long, Point> skippedPos = new HashMap<>();
+    private final Map<Long, Point> skippedPos = new HashMap<>();
     private Size frameSize = null;
     private int lastFrameIndex;
     // For converting from pixels to user coordinates - size of frame in user units

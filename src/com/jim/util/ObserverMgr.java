@@ -7,12 +7,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /** General purpose observer functionality. */
 public class ObserverMgr {
-    private Map<Object, List<Observer>> observers = new ConcurrentHashMap<>();
+    private final Map<Object, List<Observer>> observers = new ConcurrentHashMap<>();
 
     private static final ObserverMgr instance = new ObserverMgr();
 
     /** Interface to be implemented by Observers. */
-    public static interface Observer {
+    public interface Observer {
         /** Called when an observed object has changed.
          *
          * @param object The observed object which changed.

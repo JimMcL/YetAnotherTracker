@@ -22,7 +22,7 @@ public class LinearMeasurer extends ShapeDefiner {
         void handleMeasurement(Point p0, Point p1);
     }
 
-    private Handler drawer;
+    private final Handler drawer;
     private Point p0;
 
     public LinearMeasurer(Handler drawer) {

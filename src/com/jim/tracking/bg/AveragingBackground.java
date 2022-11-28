@@ -30,8 +30,8 @@ public class AveragingBackground extends BackgroundHandler {
         });
     }
 
-    private long framesToAverage;
-    private boolean useStartFrames;
+    private final long framesToAverage;
+    private final boolean useStartFrames;
     private long frameCount = 0;
 
     private AveragingBackground(long framesToAverage, boolean useStartFrames) {

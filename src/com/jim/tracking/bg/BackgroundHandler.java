@@ -41,7 +41,7 @@ public abstract class BackgroundHandler {
     protected interface BackgroundHandlerFactory {
         BackgroundHandler newHandler(FactoryInfo info);
     }
-    private static Map<String, BackgroundHandlerFactory> factories = new HashMap<>();
+    private static final Map<String, BackgroundHandlerFactory> factories = new HashMap<>();
 
     static void registerHandlerFactory(String name, BackgroundHandlerFactory factory) {
         factories.put(name, factory);

@@ -33,9 +33,9 @@ public class PolygonDefiner extends ShapeDefiner {
         void drawPoly(List<Point> points);
     }
 
-    private Handler drawer;
-    private Consumer<PolygonDefiner> onFinished;
-    private List<Point> points = new ArrayList<>();
+    private final Handler drawer;
+    private final Consumer<PolygonDefiner> onFinished;
+    private final List<Point> points = new ArrayList<>();
 
     public PolygonDefiner(Handler drawer, Consumer<PolygonDefiner> onFinished) {
         this.drawer = drawer;

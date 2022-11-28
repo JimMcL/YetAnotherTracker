@@ -190,8 +190,6 @@ public class ParamsBuilder {
         if(cmd.hasOption("background-method"))
             bgDescr = cmd.getOptionValue("background-method");
         // No longer works
-        //        if (cmd.hasOption("frame-size"))
-        //            params.grParams.playbackSize = parseSize(cmd.getOptionValue("frame-size"));
         params.grParams.playbackSpeed = doubleArg(cmd, "s", params.grParams.playbackSpeed);
         params.srcParams.resizeWidth = doubleArg(cmd, "resize", params.srcParams.resizeWidth);
         params.trParams.equalize = cmd.hasOption("equalize");

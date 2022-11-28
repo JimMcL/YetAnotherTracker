@@ -7,8 +7,8 @@ import java.text.ParsePosition;
  * Represents a distance with units.
  */
 public class Dimension {
-    private double distance;
-    private String units;
+    private final double distance;
+    private final String units;
 
     /** Parses a number string with the format "<number> <units>".
      *
@@ -44,7 +44,7 @@ public class Dimension {
     // Inner & nested classes
 
     private static class InvalidDimensionString extends RuntimeException {
-        private String s;
+        private final String s;
 
         public InvalidDimensionString(String s) {
             this.s = s;

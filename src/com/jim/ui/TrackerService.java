@@ -11,7 +11,7 @@ import javafx.concurrent.Task;
  *
  */
 public class TrackerService extends Service {
-    private SimpleObjectProperty<Params> params = new SimpleObjectProperty<Params>(this, "params");
+    private final SimpleObjectProperty<Params> params = new SimpleObjectProperty<Params>(this, "params");
     public final void setParams(Params value) { params.set(value); }
     public final Params getParams() { return params.get(); }
     public final ObjectProperty paramsProperty() { return params; }
