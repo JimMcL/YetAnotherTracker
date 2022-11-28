@@ -243,7 +243,7 @@ length allows a crude filter on shape. Any contours after the first 50 are also 
 Use `--display-contours` to display contours on the feedback window, and `--display-rectangle` to display contour
 bounding rectangles.
 
-Tracked objects are created from the contour centroids.
+Tracked objects are created from the contour centroids. Specify option `--display-centroid` to draw circles around contour centroids.
 ___
 
 <a id="Tracks"></a>
@@ -271,6 +271,8 @@ be useful for videos that are noisy at the start, creating a lot of tracks that 
 By default, when a track leaves the screen, it is treated as though it stopped where it disappeared. If you specify a
 positive value for `--termination-border <pixels>`, tracks which stop within the specified number of pixels of the mask
 region will be terminated.
+
+Specify `--display-tracks` to draw a cross at each track current location. Cross colour indicates the track ID.
 
 ### But again, what options should I use?
 

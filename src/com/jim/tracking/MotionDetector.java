@@ -69,7 +69,7 @@ public class MotionDetector implements FrameLoop.Handler {
             filter.onCameraOpened(cameraInfo);
 
         if (params.grParams.verbose)
-            System.out.println("Input " + params.srcParams.videoFile + ", fps = " + cameraInfo.getFps() + ", " +
+            System.out.println("Input " + params.srcParams.videoFile + ", EXIF fps = " + cameraInfo.getFps() + ", " +
                     "resolution " + cameraInfo.getfWidth() + "x" + cameraInfo.getfHeight() + ", duration " + cameraInfo.getNumOfFrames() + " frames");
 
         updateTransformedMask();

@@ -82,7 +82,7 @@ public class ParamsBuilder {
         options.addOption(null, "display-flow", false, "display optical flow tracks");
         options.addOption("c", "display-contours", false, "display contours");
         options.addOption("r", "display-rectangle",false, "display bounding rectangle");
-        options.addOption("p", false, "display centroid point");
+        options.addOption("p", "display-centroid",false, "display centroid point");
         options.addOption("e", false, "display rotated ellipse");
         options.addOption(null, "display-tracks", false, "display symbols for tracks");
         options.addOption(null, "display-features", false, "display detected features");

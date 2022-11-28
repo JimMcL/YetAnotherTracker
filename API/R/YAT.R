@@ -62,7 +62,7 @@ YATReadMask <- function(csvFile, viewScale = 1, failIfMissing = TRUE, flipCoords
   # Close the polygon
   pts[nrow(pts) + 1, ] <- pts[1, ]
   # Scale
-  pts <- pts / scale
+  pts <- pts / viewScale
 
   # Flip after scaling (since presumably the trajectory file is scaled
   if (flipCoords) {
@@ -71,7 +71,6 @@ YATReadMask <- function(csvFile, viewScale = 1, failIfMissing = TRUE, flipCoords
     maxY <- max(trjPoints$y)
     pts$y <- maxY - pts$y
   }
-  
 
   # Keep the includeRegion flag as an attribute
   attr(pts, "includeRegion") <- mask$includeRegion

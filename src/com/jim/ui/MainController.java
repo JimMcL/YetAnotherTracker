@@ -47,6 +47,7 @@ public class MainController extends HeadlessController implements MotionDetector
             if (due > now)
                 try {
                     Thread.sleep((long) (due - now));
+                    now = System.currentTimeMillis();
                 } catch (InterruptedException e) {
                     // Ignore
                 }
@@ -54,12 +55,12 @@ public class MainController extends HeadlessController implements MotionDetector
             lastFrameIndex = frameIndex;
         }
 
-        void setFPS(double fps) {
+        void setFPS(double fps, double playbackSpeed) {
             // Convert video frame rate to frame delay in milliseconds
-            playbackFrameInterval = (int) (1000 / fps);
+            playbackFrameInterval = (int) (1000 / fps / playbackSpeed);
         }
 
-        void adjustSpeed(double factor) {
+        void adjustSpeedRelative(double factor) {
             playbackFrameInterval *= factor;
         }
     }
@@ -129,7 +130,7 @@ public class MainController extends HeadlessController implements MotionDetector
         if (videoPlayer.getNumOfFrames() == 1) {
             disablePlaying();
         } else {
-            timer.setFPS(camera.getFps());
+            timer.setFPS(camera.getFps(), params.grParams.playbackSpeed);
             adjustSliderToVideo(camera);
             adjustViewToVideo(zoomLevel);
             Platform.runLater(() -> updatePlayButton(params.grParams.running));
@@ -186,13 +187,13 @@ public class MainController extends HeadlessController implements MotionDetector
     @SuppressWarnings("unused")
     @FXML
     public void playFaster(ActionEvent actionEvent) {
-        timer.adjustSpeed(1 / sqrt(2));
+        timer.adjustSpeedRelative(1 / sqrt(2));
     }
 
     @SuppressWarnings("unused")
     @FXML
     public void playSlower(ActionEvent actionEvent) {
-        timer.adjustSpeed(sqrt(2));
+        timer.adjustSpeedRelative(sqrt(2));
     }
 
     @SuppressWarnings("unused")
