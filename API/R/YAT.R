@@ -28,25 +28,51 @@ library(jsonlite)
 # Structure of CSV file. This can be passed to TrajsBuild as the csvStruct argument
 YAT_CSV_STRUCT <- list(x = "x", y = "y", time = "Time")
 
+
+.YATReadFile <- function(csvFile, flipCoords) {
+  if (!file.exists(csvFile)) {
+    stop(sprintf("CSV trajectory file does not exist: %s", csvFile))
+  }
+  
+  points <- read.csv(csvFile, comment.char = '#')
+  
+  if (flipCoords) {
+    # Convert the coordinate system by flipping vertically.
+    # There is a trajectory with ID -1 which contains 1 point, the maximum extent of the x and y values.
+    maxY <- max(points$y, na.rm = TRUE)
+    points$y <- maxY - points$y
+  }
+  
+  points
+}
+
 # Reads and returns the coordinates in the mask file for a video.
 #
 # Assumes that the mask file contains a single polygon.
 #
 # @param csvFile Name of the CSV file used by YetAnotherTracker. The JSON file
 #   is expected to have the same name but with extension "JSON".
-# @param viewScale Coordinates are points are scaled divided by this value, so
-#   if --view-scale was specified on the YAT command line, the same viewScale
-#   should be specified here.
 # @param failIfMissing If the JSON file doesn't exist, throws an error when
 #   TRUE, return NULL when FALSE.
 # @param flipCoords If TRUE, converts from the y-down coordinate system of
 #   videos to the y-up coordinate system of R plots.
+# @param viewScale Point values in the mask file are divided by this
+#   value to obtain mask coordinates, so if --view-scale was specified
+#   on the YAT command line, the same viewScale should be specified
+#   here. If not specified, the YAT command line is (attempted to
+#   be) read from the CSV file, and if present, used to obtain the
+#   view-scale.
+# @param maskFile Name of the JSON file containing the mask
+#   definition. If not specified, it is derived from \code{csvFile} by
+#   changing the \code{csv} extension to \code{json}.
 #
 # @return data frame with 2 columns, x & y, containing the coordinates
 #   in pixels of the mask polygon.
-YATReadMask <- function(csvFile, viewScale = 1, failIfMissing = TRUE, flipCoords = TRUE) {
+YATReadMask <- function(csvFile, failIfMissing = TRUE, flipCoords = TRUE, viewScale = 1, maskFile = NULL) {
 
-  maskFile <- gsub("csv$", "json", csvFile)
+  if (is.null(maskFile)) {
+    maskFile <- gsub("csv$", "json", csvFile)
+  }
   
   # Does the mask file exist?
   if (!file.exists(maskFile)) {
@@ -61,7 +87,15 @@ YATReadMask <- function(csvFile, viewScale = 1, failIfMissing = TRUE, flipCoords
 
   # Close the polygon
   pts[nrow(pts) + 1, ] <- pts[1, ]
-  # Scale
+  # Scale. If not specified to this function, try to get scale from CSV file
+  if (missing(viewScale)) {
+    # Get command line args from CSV file
+    cla <- readLines(csvFile, 3, ok = FALSE)[3]
+    # Extract view scale
+    scale <- sub(" .*", "", sub(".*--view-scale ", "", cla))
+    if (!is.null(scale))
+      viewScale <- as.numeric(scale)
+  }
   pts <- pts / viewScale
 
   # Flip after scaling (since presumably the trajectory file is scaled
@@ -72,8 +106,11 @@ YATReadMask <- function(csvFile, viewScale = 1, failIfMissing = TRUE, flipCoords
     pts$y <- maxY - pts$y
   }
 
-  # Keep the includeRegion flag as an attribute
+  # Keep various parameters as attributes
   attr(pts, "includeRegion") <- mask$includeRegion
+  attr(pts, "maskFile") <- maskFile
+  attr(pts, "viewScale") <- viewScale
+  attr(pts, "flipCoords") <- flipCoords
   
   pts
 }
@@ -94,6 +131,9 @@ YATReadMasks <- function(files, scales = 1, failIfMissing = TRUE, flipCoords = T
 # @param fileName name of CSV file containing coordinates output by YetAnotherTracker.
 # @param flipCoords If TRUE, converts from the y-down coordinate system of
 #   videos to the y-up coordinate system of R plots.
+# @param lengthFn Function to use to determine trajectory length. Default is to
+#   use distance travelled (TrajLength). An alternative might be to choose the
+#   trajectory with the longest duration (TrajDuration).
 #
 # @return A data frame of points with columns: 
 #   Frame - the number of the frame.
@@ -103,33 +143,46 @@ YATReadMasks <- function(files, scales = 1, failIfMissing = TRUE, flipCoords = T
 #      points for a single track, all values will be the same. 
 #   x, y - x and y-coordinate of points. Units depend on how YAT was run. 
 #   ValueChanged - true if x, y has changed since last frame.
-YATReadLongestTrackPoints <- function(fileName, flipCoords = TRUE) {
+YATReadLongestTrackPoints <- function(fileName, flipCoords = TRUE, lengthFn = TrajLength) {
 
   # Picks the longest track and returns its track ID
   .pickLongestTrack <- function(points) {
     tids <- unique(points$TrackId)
-    midx <- sapply(tids, function(tid) TrajLength(TrajFromCoords(points[points$TrackId == tid, ], "x", "y", "Time")))
+    midx <- sapply(tids, function(tid) lengthFn(TrajFromCoords(points[points$TrackId == tid, ], "x", "y", "Time")))
     tids[which.max(midx)]
   }
   
-  if (!file.exists(fileName)) {
-    stop(sprintf("CSV trajectory file does not exist: %s", fileName))
-  }
-  
-  points <- read.csv(fileName, comment.char = '#')
-  
-  if (flipCoords) {
-    # Convert the coordinate system by flipping vertically.
-    # There is a trajectory with ID -1 which contains 1 point, the maximum extent of the x and y values.
-    maxY <- max(points$y, na.rm = TRUE)
-    points$y <- maxY - points$y
-  }
+  points <- .YATReadFile(fileName, flipCoords)
   
   # Get the id of the longest track  
   tid <- .pickLongestTrack(points)
-  
-  # Just return points in the longest track
-  track <- points[points$TrackId == tid, ]
+
+  YATReadTrackPoints(fileName, tid, flipCoords)
+}
+
+# Reads a set of points from a CSV file, and returns the points in the track
+# with the specified track ID. 
+#
+# @param fileName name of CSV file containing coordinates output by
+#   YetAnotherTracker.
+# @param trackId ID of the track to be read.
+# @param flipCoords If TRUE, converts from the y-down coordinate system of
+#   videos to the y-up coordinate system of R plots.
+#
+# @return A data frame of points with columns: 
+#   Frame - the number of the frame.
+#   Time - if YAT was given a frame rate for the video, this is the frame time
+#     in seconds since the start of the video. 
+#   TrackId - numeric id of the track output by YAT. All points will have the
+#     value of the input parameter \code{trackID}.
+#   x, y - x and y-coordinate of points. Units depend on how YAT was run. 
+#   ValueChanged - true if x, y has changed since last frame.
+YATReadTrackPoints <- function(fileName, trackId, flipCoords = TRUE) {
+
+  points <- .YATReadFile(fileName, flipCoords)
+
+  # Just return points in the specified track
+  track <- points[points$TrackId == trackId, ]
   
   # Rearrange columns
   cols <- unique(c("x", "y", "Time", names(track)))
@@ -140,7 +193,6 @@ YATReadLongestTrackPoints <- function(fileName, flipCoords = TRUE) {
   
   track
 }
-
 
 ###### Data exploration ########
 
@@ -174,8 +226,9 @@ YATIdentifyLongTracks <- function(csvFile, minLength, minDuration) {
 }
 
 
-# Plots multiple trajectories in the specified file, optionally coloured according to some
-# criterion.
+# Plots multiple trajectories read from the specified file, optionally coloured according to some
+# criteria.
+# 
 # @param plotMinLength, plotMinDuration Minimum length/duration of trajectories to plot.
 # @param redMinLength, redMinDuration Minimum length/duration to draw in red (shorter are drawn in blue).
 YATPlotTrjs <- function(csvFile, flipCoords = TRUE, plotMask = FALSE,
